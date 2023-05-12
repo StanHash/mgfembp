@@ -16,7 +16,7 @@ _start:
     msr cpsr_fc, r0
     ldr sp, .L02010034 @ =0x03007E00
     ldr r1, .L02010150 @ =0x03007FFC
-    adr r0, IrqMain
+    adr r0, IntrMain
     str r0, [r1]
     ldr r1, .LMain @ =Main
     mov lr, pc
@@ -27,11 +27,11 @@ _start:
 .L02010034: .4byte 0x03007E00
 .L02010038: .4byte 0x03007FA0
 
-    .global IrqMain
-    .type IrqMain, function
+    .global IntrMain
+    .type IntrMain, function
 
     .arm
-IrqMain: @ 0x0201003C
+IntrMain: @ 0x0201003C
     mov r3, #0x4000000
     add r3, r3, #0x200
     ldr r2, [r3]

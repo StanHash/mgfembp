@@ -14,4 +14,20 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef intptr_t iptr;
 
+typedef u8 fu8;
+typedef u16 fu16;
+
+typedef i8 fi8;
+typedef i16 fi16;
+
+#if !defined(__cplusplus) && !defined(bool)
+typedef fi8 bool;
+#endif
+
+enum
+{
+    FALSE,
+    TRUE
+};
+
 #endif // TYPES_H

@@ -466,4 +466,6 @@ enum
 #define WAITCNT_AGB (0 << 15)
 #define WAITCNT_CGB (1 << 15)
 
+#define INTR_VECTOR (*(void **)0x3007FFC)
+
 #endif // GBAIO_H

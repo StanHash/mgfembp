@@ -134,31 +134,6 @@ endef
 
 $(foreach build, $(BUILD_NAMES), $(eval $(call rules,$(build))))
 
-#$(ELF): $(ALL_OBJS) $(LDS)
-#	@echo "LD $(LDS) $(ALL_OBJS:$(BUILD_DIR)/%=%)"
-#	@cd $(BUILD_DIR) && $(LD) -T ../$(LDS) -Map ../$(MAP) -L../tools/agbcc/lib $(ALL_OBJS:$(BUILD_DIR)/%=%) -lc -lgcc -o ../$@
-
-# C dependency file
-#$(BUILD_DIR)/%.d: %.c
-#	@$(CPP) $(CPPFLAGS) $< -o $@ -MM -MG -MT $@ -MT $(BUILD_DIR)/$*.o
-
-# C object
-#$(BUILD_DIR)/%.o: %.c
-#	@echo "CC $<"
-#	@$(CPP) $(CPPFLAGS) $< | iconv -f UTF-8 -t CP932 | $(CC1) $(CFLAGS) -o $(BUILD_DIR)/$*.s
-#	@echo ".text\n\t.align\t2, 0\n" >> $(BUILD_DIR)/$*.s
-#	@$(AS) $(ASFLAGS) $(BUILD_DIR)/$*.s -o $@
-#	@$(STRIP) -N .gcc2_compiled. $@
-
-# ASM dependency file (dummy, generated with the object)
-#$(BUILD_DIR)/%.d: $(BUILD_DIR)/%.o
-#	@touch $@
-
-# ASM object
-#$(BUILD_DIR)/%.o: %.s
-#	@echo "AS $<"
-#	@$(AS) $(ASFLAGS) $< -o $@ --MD $(BUILD_DIR)/$*.d
-
 ifneq (clean,$(MAKECMDGOALS))
   -include $(ALL_DEPS)
   .PRECIOUS: $(BUILD_DIR)/%.d
@@ -168,9 +143,20 @@ endif
 # = CFLAGS & CPPFLAGS overrides =
 # ===============================
 
-# not yet supported by agbcc :/
-# %/main.o:            CFLAGS += -mtpcs-frame
-
 $(BUILD_DIR)/mgfembp_20030206/%.o: CPPFLAGS += -DVER_20030206
 $(BUILD_DIR)/mgfembp_20030219/%.o: CPPFLAGS += -DVER_20030219
 $(BUILD_DIR)/mgfembp/%.o:          CPPFLAGS += -DVER_FINAL
+
+# not yet supported by agbcc :/
+# %/main.o:            CFLAGS += -mtpcs-frame
+
+%/interrupts.o:   CFLAGS += -O0
+%/hardware.o:     CFLAGS += -O0
+%/async_upload.o: CFLAGS += -O0
+%/oam.o:          CFLAGS += -O0
+%/ramfunc.o:      CFLAGS += -O0
+%/proc.o:         CFLAGS += -O0
+%/debug_text.o:   CFLAGS += -O0
+%/sprite.o:       CFLAGS += -O0
+
+%/gbasram.o:      CFLAGS += -O1

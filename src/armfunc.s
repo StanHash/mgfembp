@@ -7,9 +7,9 @@
 
 ArmCodeStart:
 
-.L0201015C: .4byte 0x0202A620
-.L02010160: .4byte 0x0202A020
-.L02010164: .4byte 0x0202A000
+.L0201015C: .4byte gPal
+.L02010160: .4byte gFadeComponents
+.L02010164: .4byte gFadeComponentStep
 
     .global ColorFadeTick
     .type ColorFadeTick, function
@@ -19,12 +19,12 @@ ColorFadeTick: @ 0x02010168
     push {r4, r5, r6, r7}
     mov r7, #0x3e0
 .L02010170:
-    ldr r0, .L02010164 @ =0x0202A000
+    ldr r0, .L02010164 @ =gFadeComponentStep
     add r0, r0, r7, lsr #5
     ldrsb r5, [r0]
     tst r5, r5
     beq .L02010228
-    ldr r4, .L02010160 @ =0x0202A020
+    ldr r4, .L02010160 @ =gFadeComponents
     lsr r0, r7, #1
     add r0, r0, r0, lsl #1
     add r0, r0, #0x30
@@ -67,7 +67,7 @@ ColorFadeTick: @ 0x02010168
 .L0201020C:
     add r0, r0, r1, lsl #5
     add r0, r0, r2, lsl #10
-    ldr r1, .L0201015C @ =0x0202A620
+    ldr r1, .L0201015C @ =gPal
     add r1, r1, r6
     strh r0, [r1, r7]
     subs r6, r6, #2
@@ -137,11 +137,11 @@ Checksum32:
     pop {r4, r5, r6, r7}
     bx lr
 
-    .global func_020102DC
-    .type func_020102DC, function
+    .global TmFillRect
+    .type TmFillRect, function
 
     .arm
-func_020102DC: @ 0x020102DC
+TmFillRect: @ 0x020102DC
     push {r4, r5, r6, r7}
     mov r4, r0
     sub r6, r2, #0
@@ -159,11 +159,11 @@ func_020102DC: @ 0x020102DC
     pop {r4, r5, r6, r7}
     bx lr
 
-    .global func_02010314
-    .type func_02010314, function
+    .global TmCopyRect
+    .type TmCopyRect, function
 
     .arm
-func_02010314: @ 0x02010314
+TmCopyRect: @ 0x02010314
     push {r4, r5, r6, r7}
     tst r2, r2
     beq .L02010368
@@ -191,11 +191,11 @@ func_02010314: @ 0x02010314
     pop {r4, r5, r6, r7}
     bx lr
 
-    .global func_02010370
-    .type func_02010370, function
+    .global TmApplyTsa
+    .type TmApplyTsa, function
 
     .arm
-func_02010370: @ 0x02010370
+TmApplyTsa: @ 0x02010370
     push {r4, r5, r6, r7}
     ldrb r3, [r1]
     ldrb r4, [r1, #1]
@@ -220,15 +220,15 @@ func_02010370: @ 0x02010370
     pop {r4, r5, r6, r7}
     bx lr
     .align 2, 0
-.L020103C4: .4byte 0x03000A00
+.L020103C4: .4byte gOamHiPutIt
 
-    .global func_020103C8
-    .type func_020103C8, function
+    .global PutOamHi
+    .type PutOamHi, function
 
     .arm
-func_020103C8: @ 0x020103C8
+PutOamHi: @ 0x020103C8
     push {r4, r5, r6, r7}
-    ldr r7, .L020103C4 @ =0x03000A00
+    ldr r7, .L020103C4 @ =gOamHiPutIt
 .L020103D0:
     ldr r5, [r7]
     ldrh r4, [r2]
@@ -270,16 +270,16 @@ func_020103C8: @ 0x020103C8
     pop {r4, r5, r6, r7}
     bx lr
     .align 2, 0
-.L02010464: .4byte 0x03000340
+.L02010464: .4byte gOamLoPutIt
 
 
-    .global func_02010468
-    .type func_02010468, function
+    .global PutOamLo
+    .type PutOamLo, function
 
     .arm
-func_02010468: @ 0x02010468
+PutOamLo: @ 0x02010468
     push {r4, r5, r6, r7}
-    ldr r7, .L02010464 @ =0x03000340
+    ldr r7, .L02010464 @ =gOamLoPutIt
     b .L020103D0
 
     .global ArmCodeEnd
