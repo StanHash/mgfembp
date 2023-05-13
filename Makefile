@@ -158,5 +158,6 @@ $(BUILD_DIR)/mgfembp/%.o:          CPPFLAGS += -DVER_FINAL
 %/proc.o:         CFLAGS += -O0
 %/debug_text.o:   CFLAGS += -O0
 %/sprite.o:       CFLAGS += -O0
+%/game_control.o: CFLAGS += -O0
 
 %/gbasram.o:      CFLAGS += -O1

@@ -42,6 +42,7 @@ SECTIONS
         . = ALIGN(4); src/proc.o(.text);
         . = ALIGN(4); src/debug_text.o(.text);
         . = ALIGN(4); src/sprite.o(.text);
+        . = ALIGN(4); src/game_control.o(.text);
         . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
@@ -66,6 +67,7 @@ SECTIONS
         . = ALIGN(4); src/proc.o(.rodata);
         . = ALIGN(4); src/debug_text.o(.rodata);
         . = ALIGN(4); src/sprite.o(.rodata);
+        . = ALIGN(4); src/game_control.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
@@ -76,6 +78,7 @@ SECTIONS
         . = ALIGN(4); src/proc.o(.data);
         . = ALIGN(4); src/debug_text.o(.data);
         . = ALIGN(4); src/sprite.o(.data);
+        . = ALIGN(4); src/game_control.o(.data);
         . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
@@ -83,6 +86,7 @@ SECTIONS
     {
         . = ALIGN(4); src/hardware.o(.bss);
         . = ALIGN(4); src/oam.o(.bss);
+        . = ALIGN(4); src/game_control.o(.bss);
 
         . = 0x000220;
         . = ALIGN(4); src/gbasram.o(.bss);

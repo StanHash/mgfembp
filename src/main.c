@@ -5,6 +5,7 @@
 
 #include "armfunc.h"
 #include "debug_text.h"
+#include "game_control.h"
 #include "hardware.h"
 #include "interrupts.h"
 #include "proc.h"

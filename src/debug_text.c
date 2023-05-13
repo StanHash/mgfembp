@@ -5,6 +5,7 @@
 #include "gbaio.h"
 #include "hardware.h"
 #include "oam.h"
+#include "sprite.h"
 
 #include "unknowns.h"
 

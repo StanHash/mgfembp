@@ -5,9 +5,6 @@
 #include "types.h"
 
 void SramInit(void);
-void OnVBlank(void);
-void StartMainProc(void);
-
-extern u16 SHOULD_BE_CONST Sprite_8x8[];
+void func_common_02016A74(void);
 
 #endif // UNKNOWNS_H

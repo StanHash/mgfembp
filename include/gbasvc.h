@@ -94,4 +94,7 @@ enum
 /* svc 19 */ void SwiSoundBiasSet(void);
 // ...
 
+#define INTR_CHECK (*(u16 *)0x3007FF8)
+#define INTR_VECTOR (*(void **)0x3007FFC)
+
 #endif // GBASVC_H
