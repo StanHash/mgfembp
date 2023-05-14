@@ -23,7 +23,7 @@ make
 
 Most functions match when using old_agbcc (the compiler fe6 uses); Some only match with "new" agbcc; and then I found one whose body matches with agbcc but requires old_agbcc prologue/epilogue emission behavior (see: https://decomp.me/scratch/8D6rH).
 
-This makes me think this uses some GCC version (or patch version) that is between old_agbcc and "new" agbcc. Which sucks because I didn't plan on having the time to look into something like that. So this will be probably be dormant for a bit.
+This makes me think this uses some GCC version (or patch version) that is between old_agbcc and "new" agbcc. Which sucks because I didn't plan on having the time to look into something like that. So this will probably be dormant for a bit.
 
 If someone wants to look into this it would be nice.
 
