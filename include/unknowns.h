@@ -6,5 +6,6 @@
 
 void SramInit(void);
 void func_common_02016A74(void);
+void * SramOffsetToAddr(u16 off);
 
 #endif // UNKNOWNS_H

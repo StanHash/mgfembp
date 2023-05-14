@@ -116,7 +116,7 @@ $(BUILD_DIR)/$1/%.d: %.c
 # C object
 $(BUILD_DIR)/$1/%.o: %.c
 	@echo "CC $$<"
-	@$(CPP) $$(CPPFLAGS) $$< | iconv -f UTF-8 -t CP932 | $(CC1) $$(CFLAGS) -o $(BUILD_DIR)/$1/$$*.s
+	$(CPP) $$(CPPFLAGS) $$< | iconv -f UTF-8 -t CP932 | $$(CC1) $$(CFLAGS) -o $(BUILD_DIR)/$1/$$*.s
 	@echo ".text\n\t.align\t2, 0\n" >> $(BUILD_DIR)/$1/$$*.s
 	@$(AS) $$(ASFLAGS) $(BUILD_DIR)/$1/$$*.s -o $$@
 	@$(STRIP) -N .gcc2_compiled. $$@
@@ -159,5 +159,8 @@ $(BUILD_DIR)/mgfembp/%.o:          CPPFLAGS += -DVER_FINAL
 %/debug_text.o:   CFLAGS += -O0
 %/sprite.o:       CFLAGS += -O0
 %/game_control.o: CFLAGS += -O0
+
+# =/
+%/save_2.o:       CC1 := $(CC1_NEW)
 
 %/gbasram.o:      CFLAGS += -O1

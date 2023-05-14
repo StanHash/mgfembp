@@ -1,6 +1,6 @@
 # The Mysterious Gba Fire Emblem something something binary
 
-This might not be a MultiBoot payload at all, it just gets loaded into EWRAM. I wonder if this isn't related to the FE6 to FE7 save linking thingy that I once heard to be a thing?
+This might not be a MultiBoot payload, I'm not sure, but it does get loaded into EWRAM. I wonder if this isn't related to the FE6 to FE7 save linking thingy that I once heard to be a thing?
 
 This builds the following binaries:
 
@@ -18,6 +18,14 @@ sudo apt install build-essential gcc-arm-none-eabi
 tools/install-agbcc.sh
 make
 ```
+
+## The problem
+
+Most functions match when using old_agbcc (the compiler fe6 uses); Some only match with "new" agbcc; and then I found one whose body matches with agbcc but requires old_agbcc prologue/epilogue emission behavior (see: https://decomp.me/scratch/8D6rH).
+
+This makes me think this uses some GCC version (or patch version) that is between old_agbcc and "new" agbcc. Which sucks because I didn't plan on having the time to look into something like that. So this will be probably be dormant for a bit.
+
+If someone wants to look into this it would be nice.
 
 ## See also
 

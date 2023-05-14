@@ -17,6 +17,7 @@ static u32 s_game_time;
 static u8 s_unk_03000008;
 static u8 s_unk_03000009;
 
+u8 EWRAM_DATA gBuf[0x2000] = { 0 };
 i8 EWRAM_DATA gFadeComponentStep[0x20] = { 0 };
 i8 EWRAM_DATA gFadeComponents[3 * 0x200] = { 0 };
 u16 EWRAM_DATA gPal[0x200] = { 0 };

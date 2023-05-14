@@ -3,8 +3,8 @@ ENTRY(_start)
 
 MEMORY
 {
-    LOADRAM (wx) : ORIGIN = 0x02010000, LENGTH = 0x1A000
-    EWRAM (w!x)  : ORIGIN = 0x0202A000, LENGTH = 256K - 0x2A000
+    LOADRAM (wx) : ORIGIN = 0x02010000, LENGTH = 0x18000
+    EWRAM (w!x)  : ORIGIN = 0x02028000, LENGTH = 256K - 0x28000
     IWRAM (w!x)  : ORIGIN = 0x03000000, LENGTH = 32K
 }
 
@@ -43,6 +43,9 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.text);
         . = ALIGN(4); src/sprite.o(.text);
         . = ALIGN(4); src/game_control.o(.text);
+        . = ALIGN(4); src/save_1.o(.text);
+        . = ALIGN(4); src/save_2.o(.text);
+        . = ALIGN(4); src/save_3.o(.text);
         . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
@@ -68,6 +71,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.rodata);
         . = ALIGN(4); src/sprite.o(.rodata);
         . = ALIGN(4); src/game_control.o(.rodata);
+        . = ALIGN(4); src/save_2.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
@@ -79,6 +83,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.data);
         . = ALIGN(4); src/sprite.o(.data);
         . = ALIGN(4); src/game_control.o(.data);
+        . = ALIGN(4); src/save_2.o(.data);
         . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
@@ -99,6 +104,8 @@ SECTIONS
         . = ALIGN(4); src/proc.o(.ewram_data);
         . = ALIGN(4); src/debug_text.o(.ewram_data);
         . = ALIGN(4); src/sprite.o(.ewram_data);
+        . = ALIGN(4); src/save_1.o(.ewram_data);
+        . = ALIGN(4); src/save_2.o(.ewram_data);
     } > EWRAM
 
     /* DWARF 2 sections */

@@ -345,6 +345,8 @@ void RefreshOnHBlank(void);
 void SetOnHBlankA(void (*opt_func)(void));
 void SetOnHBlankB(void (*opt_func)(void));
 
+extern u8 gBuf[0x2000];
+
 extern struct DispIo gDispIo;
 
 extern u16 gPal[0x200];

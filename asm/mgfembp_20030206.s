@@ -1,624 +1,5 @@
     .include "asm/head.inc"
 
-	thumb_func_start StringEquals
-StringEquals: @ 0x02014694
-	push {r4, lr}
-	adds r4, r0, #0
-	b .L020146A6
-.L0201469A:
-	adds r1, #1
-	adds r4, #1
-	cmp r2, r3
-	beq .L020146A6
-	movs r0, #0
-	b .L020146B4
-.L020146A6:
-	ldrb r2, [r4]
-	ldrb r3, [r1]
-	adds r0, r3, #0
-	orrs r0, r2
-	cmp r0, #0
-	bne .L0201469A
-	movs r0, #1
-.L020146B4:
-	pop {r4}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start StringCopy
-StringCopy: @ 0x020146BC
-	adds r3, r0, #0
-	b .L020146C6
-.L020146C0:
-	strb r2, [r3]
-	adds r1, #1
-	adds r3, #1
-.L020146C6:
-	ldrb r2, [r1]
-	cmp r2, #0
-	bne .L020146C0
-	ldrb r0, [r1]
-	strb r0, [r3]
-	bx lr
-	.align 2, 0
-
-	thumb_func_start SramChecksum32
-SramChecksum32: @ 0x020146D4
-	push {r4, r5, lr}
-	adds r5, r1, #0
-	ldr r1, .L020146F4 @ =ReadSramFast
-	ldr r4, .L020146F8 @ =0x02028000
-	ldr r3, [r1]
-	adds r1, r4, #0
-	adds r2, r5, #0
-	bl _call_via_r3
-	adds r0, r4, #0
-	adds r1, r5, #0
-	bl Checksum32_thm
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-.L020146F4: .4byte ReadSramFast
-.L020146F8: .4byte 0x02028000
-
-	thumb_func_start VerifySaveBlockChecksum
-VerifySaveBlockChecksum: @ 0x020146FC
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	ldrh r5, [r4, #0xa]
-	ldrh r0, [r4, #8]
-	bl SramOffsetToAddr
-	adds r1, r5, #0
-	bl SramChecksum32
-	ldr r1, [r4, #0xc]
-	cmp r1, r0
-	bne .L02014718
-	movs r0, #1
-	b .L0201471A
-.L02014718:
-	movs r0, #0
-.L0201471A:
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-
-	thumb_func_start PopulateSaveBlockChecksum
-PopulateSaveBlockChecksum: @ 0x02014720
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	ldrh r5, [r4, #0xa]
-	ldrh r0, [r4, #8]
-	bl SramOffsetToAddr
-	adds r1, r5, #0
-	bl SramChecksum32
-	str r0, [r4, #0xc]
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-
-	thumb_func_start func_0201473C
-func_0201473C: @ 0x0201473C
-	push {r4, r5, lr}
-	ldr r2, .L02014784 @ =0x0202F8A4
-	lsrs r1, r0, #0x14
-	movs r3, #0xf
-	ands r1, r3
-	adds r1, #0x30
-	movs r5, #0
-	strb r1, [r2]
-	lsrs r1, r0, #0x10
-	ands r1, r3
-	adds r1, #0x30
-	strb r1, [r2, #1]
-	movs r4, #0x2f
-	strb r4, [r2, #2]
-	lsrs r1, r0, #0xc
-	ands r1, r3
-	adds r1, #0x30
-	strb r1, [r2, #3]
-	lsrs r1, r0, #8
-	ands r1, r3
-	adds r1, #0x30
-	strb r1, [r2, #4]
-	strb r4, [r2, #5]
-	lsrs r1, r0, #4
-	ands r1, r3
-	adds r1, #0x30
-	strb r1, [r2, #6]
-	ands r0, r3
-	adds r0, #0x30
-	strb r0, [r2, #7]
-	strb r5, [r2, #8]
-	adds r0, r2, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-.L02014784: .4byte 0x0202F8A4
-
-	thumb_func_start func_02014788
-func_02014788: @ 0x02014788
-	bx lr
-	.align 2, 0
-
-	thumb_func_start SramInit
-SramInit: @ 0x0201478C
-	push {r4, r5, lr}
-	sub sp, #8
-	ldr r0, .L020147E4 @ =0x12345678
-	str r0, [sp]
-	ldr r0, .L020147E8 @ =0x87654321
-	str r0, [sp, #4]
-	bl SetSramFastFunc
-	ldr r2, .L020147EC @ =0x04000200
-	ldrh r0, [r2]
-	movs r3, #0x80
-	lsls r3, r3, #6
-	adds r1, r3, #0
-	orrs r0, r1
-	strh r0, [r2]
-	ldr r5, .L020147F0 @ =.L020185A4
-	ldr r1, [r5]
-	ldr r4, .L020147F4 @ =0x000070F4
-	adds r1, r1, r4
-	mov r0, sp
-	movs r2, #4
-	bl WriteSramFast
-	ldr r2, .L020147F8 @ =ReadSramFast
-	ldr r0, [r5]
-	adds r0, r0, r4
-	add r1, sp, #4
-	ldr r3, [r2]
-	movs r2, #4
-	bl _call_via_r3
-	ldr r3, .L020147FC @ =0x0202F8AE
-	movs r2, #0
-	ldr r1, [sp, #4]
-	ldr r0, [sp]
-	cmp r1, r0
-	bne .L020147D8
-	movs r2, #1
-.L020147D8:
-	strb r2, [r3]
-	add sp, #8
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L020147E4: .4byte 0x12345678
-.L020147E8: .4byte 0x87654321
-.L020147EC: .4byte 0x04000200
-.L020147F0: .4byte .L020185A4
-.L020147F4: .4byte 0x000070F4
-.L020147F8: .4byte ReadSramFast
-.L020147FC: .4byte 0x0202F8AE
-
-	thumb_func_start IsSramWorking
-IsSramWorking: @ 0x02014800
-	ldr r0, .L0201480C @ =0x0202F8AE
-	ldrb r0, [r0]
-	lsls r0, r0, #0x18
-	asrs r0, r0, #0x18
-	bx lr
-	.align 2, 0
-.L0201480C: .4byte 0x0202F8AE
-
-	thumb_func_start func_02014810
-func_02014810: @ 0x02014810
-	push {lr}
-	bl WriteAndVerifySramFast
-	pop {r0}
-	bx r0
-	.align 2, 0
-
-	thumb_func_start WipeSram
-WipeSram: @ 0x0201481C
-	push {r4, r5, r6, lr}
-	sub sp, #0x40
-	movs r1, #1
-	rsbs r1, r1, #0
-	add r0, sp, #0x3c
-.L02014826:
-	str r1, [r0]
-	subs r0, #4
-	cmp r0, sp
-	bge .L02014826
-	movs r4, #0
-	ldr r6, .L02014850 @ =.L020185A4
-	ldr r5, .L02014854 @ =0x000001FF
-.L02014834:
-	lsls r0, r4, #6
-	ldr r1, [r6]
-	adds r1, r1, r0
-	mov r0, sp
-	movs r2, #0x40
-	bl func_02014810
-	adds r4, #1
-	cmp r4, r5
-	ble .L02014834
-	add sp, #0x40
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L02014850: .4byte .L020185A4
-.L02014854: .4byte 0x000001FF
-
-	thumb_func_start Checksum16
-Checksum16: @ 0x02014858
-	push {r4, lr}
-	adds r2, r0, #0
-	movs r3, #0
-	movs r4, #0
-	lsrs r0, r1, #0x1f
-	adds r1, r1, r0
-	asrs r1, r1, #1
-	cmp r3, r1
-	bge .L02014878
-.L0201486A:
-	ldrh r0, [r2]
-	adds r3, r3, r0
-	eors r4, r0
-	adds r2, #2
-	subs r1, #1
-	cmp r1, #0
-	bne .L0201486A
-.L02014878:
-	adds r0, r3, r4
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	pop {r4}
-	pop {r1}
-	bx r1
-
-	thumb_func_start ReadGlobalSaveInfo
-ReadGlobalSaveInfo: @ 0x02014884
-	push {r4, lr}
-	sub sp, #0x20
-	adds r4, r0, #0
-	bl IsSramWorking
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	beq .L020148F4
-	cmp r4, #0
-	bne .L0201489A
-	mov r4, sp
-.L0201489A:
-	ldr r1, .L020148E0 @ =ReadSramFast
-	ldr r0, .L020148E4 @ =.L020185A4
-	ldr r0, [r0]
-	ldr r3, [r1]
-	adds r1, r4, #0
-	movs r2, #0x20
-	bl _call_via_r3
-	ldr r1, .L020148E8 @ =.L02017554
-	adds r0, r4, #0
-	bl StringEquals
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	beq .L020148F4
-	ldr r1, [r4, #8]
-	ldr r0, .L020148EC @ =0x00011217
-	cmp r1, r0
-	bne .L020148F4
-	ldrh r1, [r4, #0xc]
-	ldr r0, .L020148F0 @ =0x0000200A
-	cmp r1, r0
-	bne .L020148F4
-	adds r0, r4, #0
-	movs r1, #0x1c
-	bl Checksum16
-	ldrh r1, [r4, #0x1c]
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	cmp r1, r0
-	bne .L020148F4
-	movs r0, #1
-	b .L020148F6
-	.align 2, 0
-.L020148E0: .4byte ReadSramFast
-.L020148E4: .4byte .L020185A4
-.L020148E8: .4byte .L02017554
-.L020148EC: .4byte 0x00011217
-.L020148F0: .4byte 0x0000200A
-.L020148F4:
-	movs r0, #0
-.L020148F6:
-	add sp, #0x20
-	pop {r4}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start WriteGlobalSaveInfo
-WriteGlobalSaveInfo: @ 0x02014900
-	push {r4, lr}
-	adds r4, r0, #0
-	movs r1, #0x1c
-	bl Checksum16
-	strh r0, [r4, #0x1c]
-	ldr r0, .L02014920 @ =.L020185A4
-	ldr r1, [r0]
-	adds r0, r4, #0
-	movs r2, #0x20
-	bl func_02014810
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L02014920: .4byte .L020185A4
-
-	thumb_func_start WriteGlobalSaveInfoNoChecksum
-WriteGlobalSaveInfoNoChecksum: @ 0x02014924
-	push {lr}
-	ldr r1, .L02014934 @ =.L020185A4
-	ldr r1, [r1]
-	movs r2, #0x20
-	bl func_02014810
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L02014934: .4byte .L020185A4
-
-	thumb_func_start InitGlobalSaveInfo
-InitGlobalSaveInfo: @ 0x02014938
-	push {lr}
-	sub sp, #0x20
-	bl WipeSram
-	ldr r1, .L020149A8 @ =.L02017554
-	mov r0, sp
-	bl StringCopy
-	ldr r0, .L020149AC @ =0x00011217
-	str r0, [sp, #8]
-	mov r1, sp
-	movs r3, #0
-	ldr r0, .L020149B0 @ =0x0000200A
-	strh r0, [r1, #0xc]
-	mov r2, sp
-	ldrb r1, [r2, #0xe]
-	movs r0, #2
-	rsbs r0, r0, #0
-	ands r0, r1
-	strb r0, [r2, #0xe]
-	movs r1, #5
-	rsbs r1, r1, #0
-	ands r1, r0
-	strb r1, [r2, #0xe]
-	mov r0, sp
-	movs r2, #3
-	rsbs r2, r2, #0
-	ands r2, r1
-	strb r2, [r0, #0xe]
-	mov r1, sp
-	movs r0, #9
-	rsbs r0, r0, #0
-	ands r0, r2
-	strb r0, [r1, #0xe]
-	mov r2, sp
-	ldrh r1, [r2, #0xe]
-	movs r0, #0xf
-	ands r0, r1
-	strh r0, [r2, #0xe]
-	mov r0, sp
-	strb r3, [r0, #0x1f]
-	strb r3, [r0, #0x1e]
-	add r1, sp, #0x10
-	movs r2, #0
-	adds r0, #0x1b
-.L02014992:
-	strb r2, [r0]
-	subs r0, #1
-	cmp r0, r1
-	bge .L02014992
-	mov r0, sp
-	bl WriteGlobalSaveInfo
-	add sp, #0x20
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L020149A8: .4byte .L02017554
-.L020149AC: .4byte 0x00011217
-.L020149B0: .4byte 0x0000200A
-
-	thumb_func_start SramOffsetToAddr
-SramOffsetToAddr: @ 0x020149B4
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	ldr r1, .L020149C4 @ =.L020185A4
-	ldr r1, [r1]
-	adds r1, r1, r0
-	adds r0, r1, #0
-	bx lr
-	.align 2, 0
-.L020149C4: .4byte .L020185A4
-
-	thumb_func_start SramAddrToOffset
-SramAddrToOffset: @ 0x020149C8
-	ldr r1, .L020149D4 @ =.L020185A4
-	ldr r1, [r1]
-	subs r0, r0, r1
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	bx lr
-	.align 2, 0
-.L020149D4: .4byte .L020185A4
-
-	thumb_func_start ReadSaveBlockInfo
-ReadSaveBlockInfo: @ 0x020149D8
-	push {r4, r5, lr}
-	sub sp, #0x10
-	adds r4, r0, #0
-	adds r5, r1, #0
-	cmp r4, #0
-	bne .L020149E6
-	mov r4, sp
-.L020149E6:
-	ldr r2, .L02014A14 @ =ReadSramFast
-	ldr r0, .L02014A18 @ =.L020185A4
-	lsls r1, r5, #4
-	adds r1, #0x20
-	ldr r0, [r0]
-	adds r0, r0, r1
-	ldr r3, [r2]
-	adds r1, r4, #0
-	movs r2, #0x10
-	bl _call_via_r3
-	ldrh r1, [r4, #4]
-	ldr r0, .L02014A1C @ =0x0000200A
-	cmp r1, r0
-	bne .L02014A68
-	cmp r5, #6
-	bhi .L02014A68
-	lsls r0, r5, #2
-	ldr r1, .L02014A20 @ =.L02014A24
-	adds r0, r0, r1
-	ldr r0, [r0]
-	mov pc, r0
-	.align 2, 0
-.L02014A14: .4byte ReadSramFast
-.L02014A18: .4byte .L020185A4
-.L02014A1C: .4byte 0x0000200A
-.L02014A20: .4byte .L02014A24
-.L02014A24: @ jump table
-	.4byte .L02014A40 @ case 0
-	.4byte .L02014A40 @ case 1
-	.4byte .L02014A40 @ case 2
-	.4byte .L02014A40 @ case 3
-	.4byte .L02014A40 @ case 4
-	.4byte .L02014A48 @ case 5
-	.4byte .L02014A50 @ case 6
-.L02014A40:
-	ldr r1, .L02014A44 @ =0x00011217
-	b .L02014A52
-	.align 2, 0
-.L02014A44: .4byte 0x00011217
-.L02014A48:
-	ldr r1, .L02014A4C @ =0x00020112
-	b .L02014A52
-	.align 2, 0
-.L02014A4C: .4byte 0x00020112
-.L02014A50:
-	ldr r1, .L02014A64 @ =0x00020223
-.L02014A52:
-	ldr r0, [r4]
-	cmp r0, r1
-	bne .L02014A68
-	adds r0, r4, #0
-	bl VerifySaveBlockChecksum
-	lsls r0, r0, #0x18
-	asrs r0, r0, #0x18
-	b .L02014A6A
-	.align 2, 0
-.L02014A64: .4byte 0x00020223
-.L02014A68:
-	movs r0, #0
-.L02014A6A:
-	add sp, #0x10
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start GetSaveReadAddr
-GetSaveReadAddr: @ 0x02014A74
-	push {lr}
-	sub sp, #0x10
-	adds r1, r0, #0
-	mov r0, sp
-	bl ReadSaveBlockInfo
-	mov r0, sp
-	ldrh r0, [r0, #8]
-	bl SramOffsetToAddr
-	add sp, #0x10
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start IsNotFirstPlaythrough
-IsNotFirstPlaythrough: @ 0x02014A90
-	push {lr}
-	sub sp, #0x20
-	mov r0, sp
-	bl ReadGlobalSaveInfo
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	bne .L02014AA4
-	movs r0, #0
-	b .L02014AAC
-.L02014AA4:
-	mov r0, sp
-	ldrb r0, [r0, #0xe]
-	lsls r0, r0, #0x1f
-	lsrs r0, r0, #0x1f
-.L02014AAC:
-	add sp, #0x20
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start func_02014AB4
-func_02014AB4: @ 0x02014AB4
-	movs r0, #1
-	bx lr
-
-	thumb_func_start func_02014AB8
-func_02014AB8: @ 0x02014AB8
-	push {lr}
-	bl IsSramWorking
-	adds r1, r0, #0
-	lsls r1, r1, #0x18
-	cmp r1, #0
-	bne .L02014ACA
-	movs r0, #0
-	b .L02014AD2
-.L02014ACA:
-	movs r1, #2
-.L02014ACC:
-	subs r1, #1
-	cmp r1, #0
-	bge .L02014ACC
-.L02014AD2:
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start func_02014AD8
-func_02014AD8: @ 0x02014AD8
-	push {lr}
-	bl IsNotFirstPlaythrough
-	lsls r0, r0, #0x18
-	asrs r0, r0, #0x18
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start func_02014AE8
-func_02014AE8: @ 0x02014AE8
-	sub sp, #0x20
-	movs r2, #0
-	mov r0, sp
-	ldrb r1, [r0, #0x14]
-	movs r0, #0x20
-	ands r0, r1
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-.L02014AF8:
-	cmp r0, #0
-	beq .L02014B00
-	movs r0, #1
-	b .L02014B08
-.L02014B00:
-	adds r2, #1
-	cmp r2, #2
-	ble .L02014AF8
-	movs r0, #0
-.L02014B08:
-	add sp, #0x20
-	bx lr
-
 	thumb_func_start func_02014B0C
 func_02014B0C: @ 0x02014B0C
 	push {r4, lr}
@@ -4057,7 +3438,7 @@ func_common_020163D8: @ 0x020165AC
 	push {r4, r5, r6, lr}
 	sub sp, #4
 	adds r4, r0, #0
-	ldr r5, .L020165E8 @ =0x02028000
+	ldr r5, .L020165E8 @ =gBuf
 	ldrh r1, [r4, #0x38]
 	ldrh r0, [r4, #0x36]
 	subs r0, #1
@@ -4083,7 +3464,7 @@ func_common_020163D8: @ 0x020165AC
 	strb r0, [r1]
 	b .L02016630
 	.align 2, 0
-.L020165E8: .4byte 0x02028000
+.L020165E8: .4byte gBuf
 .L020165EC:
 	adds r0, r5, #0
 	mov r1, sp
@@ -4426,7 +3807,7 @@ func_06_0201685C: @ 0x0201685C
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r6, .L02016888 @ =0x02028000
+	ldr r6, .L02016888 @ =gBuf
 	adds r1, r6, #0
 	bl SwiLZ77UnCompReadNormalWrite8bit
 	adds r0, r4, #0
@@ -4444,7 +3825,7 @@ func_06_0201685C: @ 0x0201685C
 	pop {r0}
 	bx r0
 	.align 2, 0
-.L02016888: .4byte 0x02028000
+.L02016888: .4byte gBuf
 
 	thumb_func_start func_common_020166B8
 func_common_020166B8: @ 0x0201688C
@@ -4510,7 +3891,7 @@ func_06_020168CC: @ 0x020168CC
 	ldr r0, .L02016954 @ =.L0201861C
 	movs r1, #0
 	bl SpawnProc
-	ldr r0, .L02016958 @ =.L02018644
+	ldr r0, .L02016958 @ =gSramMain
 	adds r1, r5, #0
 	bl SpawnProc
 	ldr r0, .L0201695C @ =.L020185F4
@@ -4535,7 +3916,7 @@ func_06_020168CC: @ 0x020168CC
 .L0201694C: .4byte .L02017910
 .L02016950: .4byte 0x0202B220
 .L02016954: .4byte .L0201861C
-.L02016958: .4byte .L02018644
+.L02016958: .4byte gSramMain
 .L0201695C: .4byte .L020185F4
 
 	thumb_func_start func_06_02016960
@@ -4634,7 +4015,7 @@ func_06_02016A18: @ 0x02016A18
 	push {lr}
 	ldr r0, .L02016A38 @ =.L0201861C
 	bl Proc_EndEach
-	ldr r0, .L02016A3C @ =.L02018644
+	ldr r0, .L02016A3C @ =gSramMain
 	bl Proc_EndEach
 	ldr r0, .L02016A40 @ =.L020185F4
 	bl Proc_EndEach
@@ -4644,7 +4025,7 @@ func_06_02016A18: @ 0x02016A18
 	bx r0
 	.align 2, 0
 .L02016A38: .4byte .L0201861C
-.L02016A3C: .4byte .L02018644
+.L02016A3C: .4byte gSramMain
 .L02016A40: .4byte .L020185F4
 
 	thumb_func_start func_06_02016A44
@@ -4976,8 +4357,6 @@ Checksum32_thm:
 
 	.section ".rodata"
 
-.L02017554:
-	.byte 0x41, 0x47, 0x42, 0x2D, 0x46, 0x45, 0x36, 0x00
 .L0201755C:
 	.byte 0x10, 0x00, 0x08, 0x00
 	.byte 0x30, 0x00, 0x00, 0xF0, 0x01, 0xF0, 0x01, 0x00, 0x00, 0x30, 0x33, 0x00, 0x33, 0x33, 0x23, 0x22
@@ -5105,8 +4484,6 @@ Checksum32_thm:
 
 	.data
 
-.L020185A4:
-	.byte 0x00, 0x00, 0x00, 0x0E
 .L020185A8:
 	.byte 0xB0, 0xF8, 0x02, 0x02
 .L020185AC:
@@ -5127,7 +4504,7 @@ Checksum32_thm:
 	.byte 0xE8, 0x7B, 0x01, 0x02, 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x61, 0x54, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00
-.L02018644:
+gSramMain:
 	.byte 0x01, 0x00, 0x00, 0x00, 0xF4, 0x7B, 0x01, 0x02, 0x15, 0x00, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xD5, 0x55, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00
 	.byte 0x00, 0x00, 0x00, 0x00
