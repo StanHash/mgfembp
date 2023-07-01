@@ -43,9 +43,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.text);
         . = ALIGN(4); src/sprite.o(.text);
         . = ALIGN(4); src/game_control.o(.text);
-        . = ALIGN(4); src/save_1.o(.text);
-        . = ALIGN(4); src/save_2.o(.text);
-        . = ALIGN(4); src/save_3.o(.text);
+        . = ALIGN(4); src/save.o(.text);
         . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
@@ -71,7 +69,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.rodata);
         . = ALIGN(4); src/sprite.o(.rodata);
         . = ALIGN(4); src/game_control.o(.rodata);
-        . = ALIGN(4); src/save_2.o(.rodata);
+        . = ALIGN(4); src/save.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
@@ -83,7 +81,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.data);
         . = ALIGN(4); src/sprite.o(.data);
         . = ALIGN(4); src/game_control.o(.data);
-        . = ALIGN(4); src/save_2.o(.data);
+        . = ALIGN(4); src/save.o(.data);
         . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
@@ -104,8 +102,7 @@ SECTIONS
         . = ALIGN(4); src/proc.o(.ewram_data);
         . = ALIGN(4); src/debug_text.o(.ewram_data);
         . = ALIGN(4); src/sprite.o(.ewram_data);
-        . = ALIGN(4); src/save_1.o(.ewram_data);
-        . = ALIGN(4); src/save_2.o(.ewram_data);
+        . = ALIGN(4); src/save.o(.ewram_data);
     } > EWRAM
 
     /* DWARF 2 sections */

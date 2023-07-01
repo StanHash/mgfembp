@@ -43,8 +43,8 @@ export CPP := $(PREFIX)cpp
 export LD := $(PREFIX)ld
 export STRIP := $(PREFIX)strip
 
-CC1 := $(AGBCC_HOME)/bin/old_agbcc$(EXE)
-CC1_NEW := $(AGBCC_HOME)/bin/agbcc$(EXE)
+# this should be 010110-ThumbPatch
+CC1 := $(AGBCC_HOME)/bin/agbcc$(EXE)
 
 SHASUM ?= sha1sum
 
@@ -159,8 +159,5 @@ $(BUILD_DIR)/mgfembp/%.o:          CPPFLAGS += -DVER_FINAL
 %/debug_text.o:   CFLAGS += -O0
 %/sprite.o:       CFLAGS += -O0
 %/game_control.o: CFLAGS += -O0
-
-# =/
-%/save_2.o:       CC1 := $(CC1_NEW)
 
 %/gbasram.o:      CFLAGS += -O1
