@@ -5,6 +5,7 @@
 #include "types.h"
 
 void SramInit(void);
+void InitUnits(void);
 void func_common_02016A74(void);
 void * SramOffsetToAddr(u16 off);
 

@@ -23,6 +23,8 @@ PutOamLoRamFunc = 0x03001410;
 gOamAffinePutIt = 0x03001414;
 IntrMainRam = 0x03001420; /* size: 0800 */
 gSpriteAllocIt = 0x03001C20;
+gUnk_Sio_03001C34 = 0x03001C34;
+gSioStateId = 0x03001CC8;
 gUnits = 0x03001CD0;
 ReadSramFast = 0x03002ED0;
 VerifySramFast = 0x03002ED4;
@@ -44,6 +46,7 @@ SECTIONS
         . = ALIGN(4); src/sprite.o(.text);
         . = ALIGN(4); src/game_control.o(.text);
         . = ALIGN(4); src/save.o(.text);
+        . = ALIGN(4); src/sio.o(.text);
         . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
@@ -82,6 +85,7 @@ SECTIONS
         . = ALIGN(4); src/sprite.o(.data);
         . = ALIGN(4); src/game_control.o(.data);
         . = ALIGN(4); src/save.o(.data);
+        . = ALIGN(4); src/sio.o(.data);
         . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
@@ -90,6 +94,7 @@ SECTIONS
         . = ALIGN(4); src/hardware.o(.bss);
         . = ALIGN(4); src/oam.o(.bss);
         . = ALIGN(4); src/game_control.o(.bss);
+        . = ALIGN(4); src/sio.o(.bss);
 
         . = 0x000220;
         . = ALIGN(4); src/gbasram.o(.bss);
@@ -103,6 +108,7 @@ SECTIONS
         . = ALIGN(4); src/debug_text.o(.ewram_data);
         . = ALIGN(4); src/sprite.o(.ewram_data);
         . = ALIGN(4); src/save.o(.ewram_data);
+        . = ALIGN(4); src/sio.o(.ewram_data);
     } > EWRAM
 
     /* DWARF 2 sections */
