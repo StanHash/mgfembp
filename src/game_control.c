@@ -15,17 +15,21 @@ static u32 s_pad_0300002C;
 
 static bool s_frame_ended;
 
-// clang-format sucks for data
-struct ProcScr SHOULD_BE_CONST ProcScr_Program[] = {
-    PROC_NAME("GAMECTRL"),           //
-    PROC_MARK(PROC_MARK_GAMECTRL),   //
-    PROC_15,                         //
-    PROC_CALL(func_common_02016A74), //
-    PROC_SLEEP(0),                   //
-    PROC_LABEL(0),                   //
-    PROC_GOTO(0),                    //
-    PROC_END,                        //
+// clang-format off
+
+struct ProcScr SHOULD_BE_CONST ProcScr_Program[] =
+{
+    PROC_NAME("GAMECTRL"),
+    PROC_MARK(PROC_MARK_GAMECTRL),
+    PROC_15,
+    PROC_CALL(func_common_02016A74),
+    PROC_SLEEP(0),
+PROC_LABEL(0),
+    PROC_GOTO(0),
+    PROC_END,
 };
+
+// clang-format on
 
 void OnVBlank(void)
 {

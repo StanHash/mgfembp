@@ -104,10 +104,15 @@ u16 SHOULD_BE_CONST Sprite_16x16_VFlipped[] = {
     OAM0_SHAPE_16x16, OAM1_SIZE_16x16 + OAM1_VFLIP, 0, // object 0
 };
 
-struct ProcScr SHOULD_BE_CONST ProcSrc_SpriteRefresher[] = {
+// clang-format off
+
+struct ProcScr SHOULD_BE_CONST ProcSrc_SpriteRefresher[] =
+{
     PROC_REPEAT(SpriteRefresher_Loop),
     PROC_END,
 };
+
+// clang-format on
 
 extern struct SpriteEnt * COMMON_DATA(gSpriteAllocIt) gSpriteAllocIt;
 

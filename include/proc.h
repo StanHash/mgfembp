@@ -194,39 +194,6 @@ enum
     /* 28 */ u8 proc_lock_cnt; /* wait semaphore. Process execution */                                                 \
                                /* is blocked when this is nonzero. */
 
-// TODO: stop using this
-// this is just lazy bad
-struct GenericProc
-{
-    /* 00 */ PROC_HEADER;
-
-    /* 2C */ int x, y;
-    /* 34 */ int unk34;
-    /* 38 */ int unk38;
-    /* 3C */ int unk3C;
-    /* 40 */ int unk40;
-
-    /* 44 */ u8 pad_38[0x4A - 0x44];
-
-    /* 4A */ short unk4A;
-
-    // Is this part of that?
-    /* 4C */ short unk4C;
-    /* 4E */ short unk4E;
-    /* 50 */ short unk50;
-
-    /* 52 */ u16 unk52;
-
-    /* 54 */ void * ptr;
-    /* 58 */ int unk58;
-    /* 5C */ int unk5C;
-    /* 60 */ int unk60;
-    /* 64 */ short unk64;
-    /* 66 */ short unk66;
-    /* 68 */ short unk68;
-    /* 6A */ short unk6A;
-};
-
 #define PROC_TREE_VSYNC ((AnyProc *)0)
 #define PROC_TREE_1 ((AnyProc *)1)
 #define PROC_TREE_2 ((AnyProc *)2)

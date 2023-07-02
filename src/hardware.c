@@ -681,6 +681,7 @@ void InitBgs(u16 const * opt_config)
 
     int i;
 
+    // NOTE: this will only match with -g!
     if (opt_config == NULL)
         opt_config = default_config;
 

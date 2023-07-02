@@ -23,9 +23,11 @@ PutOamLoRamFunc = 0x03001410;
 gOamAffinePutIt = 0x03001414;
 IntrMainRam = 0x03001420; /* size: 0800 */
 gSpriteAllocIt = 0x03001C20;
+gUnk_Sio_03001C30 = 0x03001C30;
 gUnk_Sio_03001C34 = 0x03001C34;
 gSioStateId = 0x03001CC8;
 gUnits = 0x03001CD0;
+gUnk_Sio_03002E50 = 0x03002E50;
 ReadSramFast = 0x03002ED0;
 VerifySramFast = 0x03002ED4;
 
