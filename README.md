@@ -37,4 +37,4 @@ This requires a very specific variant of the compiler (010110-ThumbPatch) (the i
 
 ## Contact
 
-You can find me over at the [Fire Emblem Universe Discord](https://feuniverse.us/t/feu-discord-server/1480?u=stanh) under the handle `nat5#4387`. I also lurk some other places like the pret discord.
+You can find me over at the [Fire Emblem Universe Discord](https://feuniverse.us/t/feu-discord-server/1480?u=stanh) under the handle `nat_776`. I also lurk some other places like the pret discord.
