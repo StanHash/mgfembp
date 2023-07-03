@@ -1,811 +1,5 @@
     .include "asm/head.inc"
 
-	thumb_func_start func_common_0201533C
-func_common_0201533C: @ 0x02015364
-	push {r4, lr}
-	ldr r0, .L0201539C @ =.L02017BAC
-	movs r1, #0
-	movs r2, #0x20
-	bl ApplyPaletteExt
-	ldr r4, .L020153A0 @ =.L0201755C
-	movs r0, #1
-	bl GetBgChrOffset
-	adds r1, r0, #0
-	movs r0, #0xc0
-	lsls r0, r0, #0x13
-	adds r1, r1, r0
-	adds r0, r4, #0
-	bl func_common_020166B8
-	ldr r0, .L020153A4 @ =.L020179E0
-	ldr r1, .L020153A8 @ =0x0202B220
-	bl func_common_020166B8
-	movs r0, #2
-	bl EnableBgSync
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L0201539C: .4byte .L02017BAC
-.L020153A0: .4byte .L0201755C
-.L020153A4: .4byte .L020179E0
-.L020153A8: .4byte 0x0202B220
-
-	thumb_func_start func_common_02015384
-func_common_02015384: @ 0x020153AC
-	push {lr}
-	movs r0, #0
-	bl InitBgs
-	bl InitProcs
-	movs r0, #0
-	movs r1, #0
-	movs r2, #0
-	bl SetBgOffset
-	ldr r3, .L02015420 @ =gDispIo
-	ldrb r1, [r3, #1]
-	movs r0, #2
-	rsbs r0, r0, #0
-	ands r0, r1
-	movs r1, #2
-	orrs r0, r1
-	movs r1, #5
-	rsbs r1, r1, #0
-	ands r0, r1
-	subs r1, #4
-	ands r0, r1
-	subs r1, #8
-	ands r0, r1
-	subs r1, #0x10
-	ands r0, r1
-	subs r1, #0x20
-	ands r0, r1
-	movs r1, #0x7f
-	ands r0, r1
-	strb r0, [r3, #1]
-	adds r2, r3, #0
-	adds r2, #0x3c
-	ldrb r1, [r2]
-	movs r0, #0x3f
-	ands r0, r1
-	strb r0, [r2]
-	adds r2, #8
-	movs r1, #0
-	movs r0, #0x10
-	strb r0, [r2]
-	adds r0, r3, #0
-	adds r0, #0x45
-	strb r1, [r0]
-	adds r0, #1
-	strb r1, [r0]
-	strh r1, [r3, #0x38]
-	bl SyncDispIo
-	bl func_common_0201533C
-	ldr r0, .L02015424 @ =func_common_02015330
-	bl SetMainFunc
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L02015420: .4byte gDispIo
-.L02015424: .4byte func_common_02015330
-
-	thumb_func_start func_common_02015400
-func_common_02015400: @ 0x02015428
-	push {lr}
-	ldr r1, .L02015450 @ =0x04000004
-	movs r0, #8
-	strh r0, [r1]
-	ldr r1, .L02015454 @ =0x04000208
-	movs r0, #1
-	strh r0, [r1]
-	movs r1, #0x80
-	lsls r1, r1, #0x13
-	movs r0, #0
-	strh r0, [r1]
-	ldr r0, .L02015458 @ =func_common_02015314
-	bl SetOnVBlank
-	ldr r0, .L0201545C @ =func_common_02015384
-	bl SetMainFunc
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L02015450: .4byte 0x04000004
-.L02015454: .4byte 0x04000208
-.L02015458: .4byte func_common_02015314
-.L0201545C: .4byte func_common_02015384
-
-	thumb_func_start func_common_02015438
-func_common_02015438: @ 0x02015460
-	push {r4, r5, r6, lr}
-	sub sp, #4
-	ldr r0, .L0201549C @ =gUnk_Sio_02018648
-	ldr r2, [r0]
-	ldrh r1, [r2, #4]
-	adds r5, r0, #0
-	cmp r1, #4
-	bhi .L02015472
-	b .L020155A0
-.L02015472:
-	ldrb r0, [r2, #1]
-	cmp r0, #0
-	bne .L0201547A
-	b .L020155A0
-.L0201547A:
-	ldrb r0, [r2, #0x1e]
-	adds r0, #1
-	strb r0, [r2, #0x1e]
-	ldr r1, [r5]
-	ldrh r0, [r1, #4]
-	cmp r0, #6
-	bne .L02015508
-	adds r0, r1, #0
-	adds r0, #0x21
-	ldrb r0, [r0]
-	cmp r0, #2
-	beq .L020154BA
-	cmp r0, #2
-	bgt .L020154A0
-	cmp r0, #1
-	beq .L020154E0
-	b .L02015508
-	.align 2, 0
-.L0201549C: .4byte gUnk_Sio_02018648
-.L020154A0:
-	cmp r0, #3
-	bne .L02015508
-	ldrb r0, [r1, #0x1e]
-	cmp r0, #0x3c
-	bls .L020154BA
-	movs r0, #6
-	ldrsb r0, [r1, r0]
-	adds r1, #0xb
-	adds r1, r1, r0
-	movs r0, #0
-	strb r0, [r1]
-	bl func_common_02015400
-.L020154BA:
-	ldr r4, .L0201552C @ =gUnk_Sio_02018648
-	ldr r0, [r4]
-	ldrb r0, [r0, #1]
-	cmp r0, #0
-	beq .L020154E0
-	bl func_common_0201596C
-	lsls r0, r0, #0x18
-	asrs r2, r0, #0x18
-	cmp r2, #0
-	bne .L020154E0
-	ldr r0, [r4]
-	movs r1, #6
-	ldrsb r1, [r0, r1]
-	adds r0, #0xb
-	adds r0, r0, r1
-	strb r2, [r0]
-	bl func_common_02015400
-.L020154E0:
-	movs r4, #0
-	ldr r5, .L0201552C @ =gUnk_Sio_02018648
-.L020154E4:
-	ldr r0, .L0201552C @ =gUnk_Sio_02018648
-	ldr r1, [r0]
-	adds r0, r1, #0
-	adds r0, #0x1a
-	adds r0, r0, r4
-	ldrb r0, [r0]
-	cmp r0, #0x3c
-	bls .L02015502
-	adds r0, r1, #0
-	adds r0, #0xb
-	adds r0, r0, r4
-	movs r1, #0
-	strb r1, [r0]
-	bl func_common_02015400
-.L02015502:
-	adds r4, #1
-	cmp r4, #3
-	ble .L020154E4
-.L02015508:
-	adds r4, r5, #0
-	ldr r1, [r4]
-	ldrb r0, [r1, #1]
-	adds r6, r0, #0
-	cmp r6, #1
-	bne .L0201557C
-	ldrb r5, [r1, #0x10]
-	cmp r5, #0
-	bne .L0201555E
-	ldrb r0, [r1, #0x11]
-	cmp r0, #0x3c
-	bls .L02015530
-	bl func_common_02015400
-	ldr r1, [r4]
-	movs r0, #2
-	strh r0, [r1, #4]
-	b .L020155A0
-	.align 2, 0
-.L0201552C: .4byte gUnk_Sio_02018648
-.L02015530:
-	mov r0, sp
-	bl func_common_02015E28
-	cmp r0, #0
-	beq .L0201555E
-	ldr r1, [sp]
-	adds r1, #6
-	lsls r1, r1, #0x10
-	lsrs r1, r1, #0x10
-	bl func_common_02015A3C
-	lsls r0, r0, #0x10
-	cmp r0, #0
-	ble .L0201555E
-	ldr r0, [r4]
-	strb r5, [r0, #0x10]
-	ldr r1, [r4]
-	ldrb r0, [r1, #0x11]
-	adds r0, #1
-	strb r0, [r1, #0x11]
-	ldr r0, [r4]
-	adds r0, #0x2e
-	strb r6, [r0]
-.L0201555E:
-	ldr r2, .L02015578 @ =gUnk_Sio_02018648
-	ldr r1, [r2]
-	ldrb r0, [r1, #0x10]
-	adds r0, #1
-	strb r0, [r1, #0x10]
-	ldr r4, [r2]
-	ldrb r0, [r4, #0x10]
-	movs r1, #9
-	bl __umodsi3
-	strb r0, [r4, #0x10]
-	b .L020155A0
-	.align 2, 0
-.L02015578: .4byte gUnk_Sio_02018648
-.L0201557C:
-	subs r0, #2
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #1
-	bhi .L020155A0
-	movs r0, #6
-	ldrsb r0, [r1, r0]
-	cmp r0, #0
-	bne .L020155A0
-	adds r0, r1, #0
-	adds r0, #0x30
-	movs r1, #1
-	rsbs r1, r1, #0
-	bl func_common_02015CEC
-	ldr r1, [r5]
-	ldr r0, .L020155A8 @ =0x00005FFF
-	strh r0, [r1, #0x30]
-.L020155A0:
-	add sp, #4
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-.L020155A8: .4byte 0x00005FFF
-
-	thumb_func_start func_common_02015584
-func_common_02015584: @ 0x020155AC
-	ldr r1, .L020155C4 @ =0x0400010E
-	movs r0, #0
-	strh r0, [r1]
-	ldr r2, .L020155C8 @ =0x04000128
-	ldr r0, .L020155CC @ =0x03000038
-	ldrb r0, [r0]
-	movs r3, #0xc1
-	lsls r3, r3, #7
-	adds r1, r3, #0
-	orrs r0, r1
-	strh r0, [r2]
-	bx lr
-	.align 2, 0
-.L020155C4: .4byte 0x0400010E
-.L020155C8: .4byte 0x04000128
-.L020155CC: .4byte 0x03000038
-
-	thumb_func_start func_common_020155A8
-func_common_020155A8: @ 0x020155D0
-	bx lr
-	.align 2, 0
-
-	thumb_func_start func_common_020155AC
-func_common_020155AC: @ 0x020155D4
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	movs r6, #0
-	movs r4, #0x38
-.L020155DE:
-	ldr r5, .L020156E0 @ =gUnk_Sio_02018648
-	ldr r0, [r5]
-	lsls r1, r6, #1
-	adds r0, #0x26
-	adds r0, r0, r1
-	ldrh r2, [r0]
-	adds r0, r4, #0
-	movs r1, #0x88
-	movs r3, #4
-	bl DebugPutObjNumber
-	adds r0, r6, #0
-	bl func_06_02016424
-	adds r2, r0, #0
-	adds r0, r4, #0
-	movs r1, #0x90
-	movs r3, #4
-	bl DebugPutObjNumber
-	adds r4, #0x28
-	adds r6, #1
-	cmp r6, #3
-	ble .L020155DE
-	ldr r2, .L020156E4 @ =.L02017BCC
-	movs r0, #0x18
-	movs r1, #0x70
-	bl DebugPutObjStr
-	ldr r2, .L020156E8 @ =.L02017BD0
-	movs r0, #0x10
-	movs r1, #0x78
-	bl DebugPutObjStr
-	ldr r2, .L020156EC @ =.L02017BD8
-	movs r0, #0x10
-	movs r1, #0x88
-	bl DebugPutObjStr
-	ldr r0, [r5]
-	movs r2, #6
-	ldrsb r2, [r0, r2]
-	movs r0, #0x10
-	movs r1, #0x48
-	movs r3, #2
-	bl DebugPutObjNumber
-	ldr r0, [r5]
-	ldrb r2, [r0, #0xa]
-	movs r0, #0x10
-	movs r1, #0x50
-	movs r3, #2
-	bl DebugPutObjNumber
-	ldr r0, [r5]
-	ldrb r2, [r0, #0xf]
-	movs r0, #0x10
-	movs r1, #0x58
-	movs r3, #2
-	bl DebugPutObjNumber
-	movs r0, #1
-	rsbs r0, r0, #0
-	bl func_06_02016424
-	adds r2, r0, #0
-	movs r0, #8
-	movs r1, #0x90
-	movs r3, #4
-	bl DebugPutObjNumber
-	ldr r2, [r5]
-	ldrb r1, [r2, #1]
-	cmp r1, #1
-	beq .L02015676
-	b .L020159C6
-.L02015676:
-	movs r0, #6
-	ldrsb r0, [r2, r0]
-	lsls r1, r0
-	ldrb r0, [r2, #0xf]
-	orrs r1, r0
-	strb r1, [r2, #0xf]
-	movs r6, #0
-.L02015684:
-	lsls r4, r6, #2
-	adds r4, r4, r6
-	adds r4, #7
-	lsls r4, r4, #3
-	ldr r0, .L020156F0 @ =gUnk_Sio_06_03001C30
-	lsls r5, r6, #1
-	adds r0, r5, r0
-	ldrh r2, [r0]
-	adds r0, r4, #0
-	movs r1, #0x70
-	movs r3, #4
-	bl DebugPutObjNumber
-	ldr r0, .L020156F4 @ =gUnk_Sio_06_03001CC8
-	adds r5, r5, r0
-	ldrh r2, [r5]
-	adds r0, r4, #0
-	movs r1, #0x78
-	movs r3, #4
-	bl DebugPutObjNumber
-	adds r0, r6, #1
-	mov r8, r0
-	lsls r7, r6, #0x18
-.L020156B4:
-	asrs r0, r7, #0x18
-	ldr r4, .L020156E0 @ =gUnk_Sio_02018648
-	ldr r1, [r4]
-	adds r1, #0x32
-	bl func_06_02015C5C
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	adds r1, r0, #0
-	cmp r0, #0
-	bne .L020156CC
-	b .L020159BE
-.L020156CC:
-	cmp r0, #0x16
-	beq .L0201570C
-	cmp r0, #0x16
-	bgt .L020156F8
-	cmp r0, #4
-	bne .L020156DA
-	b .L02015814
-.L020156DA:
-	cmp r0, #0xa
-	beq .L0201570C
-	b .L020159BE
-	.align 2, 0
-.L020156E0: .4byte gUnk_Sio_02018648
-.L020156E4: .4byte .L02017BCC
-.L020156E8: .4byte .L02017BD0
-.L020156EC: .4byte .L02017BD8
-.L020156F0: .4byte gUnk_Sio_06_03001C30
-.L020156F4: .4byte gUnk_Sio_06_03001CC8
-.L020156F8:
-	cmp r0, #0x2e
-	beq .L0201570C
-	cmp r0, #0x2e
-	bgt .L02015706
-	cmp r0, #0x2a
-	beq .L0201570C
-	b .L020159BE
-.L02015706:
-	cmp r1, #0x80
-	beq .L0201570C
-	b .L020159BE
-.L0201570C:
-	ldr r5, .L02015760 @ =gUnk_Sio_02018648
-	ldr r2, [r5]
-	adds r4, r2, #0
-	adds r4, #0x32
-	ldrb r0, [r4]
-	cmp r0, #0x1c
-	beq .L02015794
-	cmp r0, #0x1f
-	beq .L02015720
-	b .L020159BE
-.L02015720:
-	ldrb r1, [r4, #1]
-	movs r0, #6
-	ldrsb r0, [r2, r0]
-	cmp r1, r0
-	bne .L0201572C
-	b .L020159BE
-.L0201572C:
-	lsls r1, r1, #1
-	adds r3, r2, #0
-	adds r3, #0x26
-	adds r1, r3, r1
-	ldrh r0, [r4, #2]
-	ldrh r1, [r1]
-	cmp r0, r1
-	beq .L02015768
-	ldr r0, .L02015764 @ =0x03002E50
-	movs r1, #0x1e
-	strb r1, [r0]
-	ldrb r1, [r2, #6]
-	lsls r1, r1, #4
-	ldrb r2, [r4, #1]
-	orrs r1, r2
-	strb r1, [r0, #1]
-	ldrb r1, [r4, #1]
-	lsls r1, r1, #1
-	adds r1, r3, r1
-	ldrh r1, [r1]
-	strh r1, [r0, #2]
-	movs r1, #4
-	bl func_common_02015A3C
-	b .L020156B4
-	.align 2, 0
-.L02015760: .4byte gUnk_Sio_02018648
-.L02015764: .4byte 0x03002E50
-.L02015768:
-	adds r0, r4, #0
-	bl func_common_02015DB4
-	ldr r0, .L02015790 @ =0x03002E50
-	movs r1, #0x1e
-	strb r1, [r0]
-	ldr r3, [r5]
-	ldrb r1, [r3, #6]
-	lsls r1, r1, #4
-	ldrb r2, [r4, #1]
-	orrs r1, r2
-	strb r1, [r0, #1]
-	ldrb r1, [r4, #1]
-	lsls r1, r1, #1
-	adds r3, #0x26
-	adds r3, r3, r1
-	ldrh r1, [r3]
-	adds r1, #1
-	strh r1, [r0, #2]
-	b .L02015804
-	.align 2, 0
-.L02015790: .4byte 0x03002E50
-.L02015794:
-	lsrs r0, r7, #0x18
-	bl func_common_0201592C
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	bne .L020157B0
-	ldr r3, [r5]
-	ldrb r0, [r3]
-	ldrh r1, [r4, #2]
-	cmp r0, r1
-	bne .L020157B0
-	ldrh r0, [r3, #4]
-	cmp r0, #5
-	bls .L020157BE
-.L020157B0:
-	lsrs r0, r7, #0x18
-	bl func_common_0201592C
-	lsls r0, r0, #0x18
-	asrs r0, r0, #0x18
-	cmp r0, #1
-	bne .L020157E0
-.L020157BE:
-	ldr r0, .L020157D8 @ =gUnk_Sio_02018648
-	ldr r2, [r0]
-	movs r0, #6
-	ldrsb r0, [r2, r0]
-	cmp r0, #0
-	beq .L020157CC
-	b .L020159BE
-.L020157CC:
-	ldr r0, .L020157DC @ =0x03002E50
-	movs r1, #0x16
-	strb r1, [r0]
-	ldrb r1, [r2, #6]
-	b .L02015800
-	.align 2, 0
-.L020157D8: .4byte gUnk_Sio_02018648
-.L020157DC: .4byte 0x03002E50
-.L020157E0:
-	ldr r0, .L0201580C @ =gUnk_Sio_02018648
-	ldr r1, [r0]
-	movs r0, #6
-	ldrsb r0, [r1, r0]
-	cmp r0, #0
-	beq .L020157EE
-	b .L020159BE
-.L020157EE:
-	ldrb r0, [r1]
-	movs r2, #0x15
-	ldrh r4, [r4, #2]
-	cmp r0, r4
-	beq .L020157FA
-	movs r2, #0x17
-.L020157FA:
-	ldr r0, .L02015810 @ =0x03002E50
-	strb r2, [r0]
-	ldrb r1, [r1, #6]
-.L02015800:
-	strb r1, [r0, #1]
-	strh r6, [r0, #2]
-.L02015804:
-	movs r1, #4
-	bl func_common_02015A3C
-	b .L020159BE
-	.align 2, 0
-.L0201580C: .4byte gUnk_Sio_02018648
-.L02015810: .4byte 0x03002E50
-.L02015814:
-	ldr r0, [r4]
-	adds r5, r0, #0
-	adds r5, #0x32
-	ldrb r0, [r5]
-	subs r0, #0x14
-	cmp r0, #0xa
-	bls .L02015824
-	b .L020159BE
-.L02015824:
-	lsls r0, r0, #2
-	ldr r1, .L02015830 @ =.L02015834
-	adds r0, r0, r1
-	ldr r0, [r0]
-	mov pc, r0
-	.align 2, 0
-.L02015830: .4byte .L02015834
-.L02015834: @ jump table
-	.4byte .L020159B8 @ case 0
-	.4byte .L02015960 @ case 1
-	.4byte .L02015988 @ case 2
-	.4byte .L02015920 @ case 3
-	.4byte .L020159BE @ case 4
-	.4byte .L02015860 @ case 5
-	.4byte .L020159BE @ case 6
-	.4byte .L020159BE @ case 7
-	.4byte .L020159BE @ case 8
-	.4byte .L020159BE @ case 9
-	.4byte .L02015878 @ case 10
-.L02015860:
-	ldr r0, .L02015874 @ =gUnk_Sio_02018648
-	ldr r2, [r0]
-	movs r0, #1
-	ldrb r5, [r5, #1]
-	lsls r0, r5
-	ldrb r1, [r2, #0xa]
-	orrs r0, r1
-	strb r0, [r2, #0xa]
-	b .L020159BE
-	.align 2, 0
-.L02015874: .4byte gUnk_Sio_02018648
-.L02015878:
-	ldr r6, .L02015914 @ =gUnk_Sio_02018648
-	ldr r3, [r6]
-	adds r0, r3, #0
-	adds r0, #0x2e
-	ldrb r0, [r0]
-	cmp r0, #0
-	bne .L02015888
-	b .L020159BE
-.L02015888:
-	ldrb r2, [r5, #1]
-	lsrs r4, r2, #4
-	movs r1, #6
-	ldrsb r1, [r3, r1]
-	cmp r4, r1
-	bne .L02015896
-	b .L020159BE
-.L02015896:
-	movs r0, #0xf
-	ands r0, r2
-	cmp r0, r1
-	beq .L020158A0
-	b .L020159BE
-.L020158A0:
-	ldrh r0, [r3, #0x24]
-	adds r0, #1
-	ldrh r1, [r5, #2]
-	lsls r0, r0, #0x10
-	lsrs r0, r0, #0x10
-	cmp r1, r0
-	beq .L020158B0
-	b .L020159BE
-.L020158B0:
-	movs r0, #1
-	lsls r0, r4
-	ldrb r1, [r3, #0xf]
-	orrs r0, r1
-	strb r0, [r3, #0xf]
-	ldr r0, .L02015918 @ =0x03000040
-	ldr r1, [r0]
-	ldr r0, [r6]
-	ldrb r0, [r0, #0xf]
-	strb r0, [r1]
-	ldr r4, [r6]
-	ldrb r0, [r4, #0xf]
-	ldrb r1, [r4, #9]
-	ands r0, r1
-	cmp r0, r1
-	bne .L020159BE
-	ldrh r0, [r4, #0x24]
-	adds r0, #1
-	movs r3, #0
-	strh r0, [r4, #0x24]
-	ldr r2, .L0201591C @ =0x000007C4
-	adds r0, r4, r2
-	ldrb r1, [r0]
-	movs r0, #0x8c
-	muls r0, r1, r0
-	adds r0, r4, r0
-	movs r1, #0x9c
-	lsls r1, r1, #1
-	adds r0, r0, r1
-	strb r3, [r0]
-	ldr r1, [r6]
-	adds r1, r1, r2
-	ldrb r0, [r1]
-	adds r0, #1
-	strb r0, [r1]
-	ldr r1, [r6]
-	adds r1, r1, r2
-	ldrb r2, [r1]
-	movs r0, #7
-	ands r0, r2
-	strb r0, [r1]
-	ldr r0, [r6]
-	adds r0, #0x2e
-	strb r3, [r0]
-	ldr r0, [r6]
-	strb r3, [r0, #0xf]
-	strb r3, [r0, #0x11]
-	strb r3, [r0, #0x10]
-	b .L020159BE
-	.align 2, 0
-.L02015914: .4byte gUnk_Sio_02018648
-.L02015918: .4byte 0x03000040
-.L0201591C: .4byte 0x000007C4
-.L02015920:
-	ldrb r0, [r5, #2]
-	bl func_common_0201592C
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	bne .L020159BE
-	ldr r4, .L0201595C @ =gUnk_Sio_02018648
-	ldr r0, [r4]
-	movs r1, #6
-	ldrsb r1, [r0, r1]
-	adds r0, #0xb
-	adds r0, r0, r1
-	movs r3, #2
-	strb r3, [r0]
-	ldr r1, [r4]
-	ldrh r2, [r1, #2]
-	movs r0, #0x30
-	ands r0, r2
-	lsrs r0, r0, #4
-	adds r1, #0xb
-	adds r1, r1, r0
-	strb r3, [r1]
-	ldr r0, [r4]
-	adds r0, #0xb
-	ldrh r5, [r5, #2]
-	adds r0, r0, r5
-	strb r3, [r0]
-	ldr r1, [r4]
-	b .L0201597C
-	.align 2, 0
-.L0201595C: .4byte gUnk_Sio_02018648
-.L02015960:
-	ldrb r0, [r5, #2]
-	bl func_common_0201592C
-	lsls r0, r0, #0x18
-	cmp r0, #0
-	bne .L020159BE
-	ldr r2, .L02015984 @ =gUnk_Sio_02018648
-	ldr r0, [r2]
-	adds r0, #0xb
-	ldrh r5, [r5, #2]
-	adds r0, r0, r5
-	movs r1, #2
-	strb r1, [r0]
-	ldr r1, [r2]
-.L0201597C:
-	movs r0, #6
-	strh r0, [r1, #4]
-	b .L020159BE
-	.align 2, 0
-.L02015984: .4byte gUnk_Sio_02018648
-.L02015988:
-	ldr r3, .L020159B4 @ =gUnk_Sio_02018648
-	ldr r1, [r3]
-	adds r1, #0xb
-	ldrh r0, [r5, #2]
-	adds r1, r1, r0
-	movs r4, #0
-	movs r0, #5
-	strb r0, [r1]
-	ldr r2, [r3]
-	movs r0, #1
-	ldrh r1, [r5, #2]
-	lsls r0, r1
-	ldrb r1, [r2, #9]
-	orrs r0, r1
-	strb r0, [r2, #9]
-	ldr r0, [r3]
-	adds r0, #0x1a
-	ldrh r5, [r5, #2]
-	adds r0, r0, r5
-	strb r4, [r0]
-	b .L020159BE
-	.align 2, 0
-.L020159B4: .4byte gUnk_Sio_02018648
-.L020159B8:
-	ldrb r0, [r5, #1]
-	bl func_common_020155A8
-.L020159BE:
-	mov r6, r8
-	cmp r6, #3
-	bgt .L020159C6
-	b .L02015684
-.L020159C6:
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-
 	thumb_func_start func_common_020158D0
 func_common_020158D0: @ 0x020159D0
 	bx lr
@@ -1172,8 +366,8 @@ func_common_02015A3C: @ 0x02015B64
 	.align 2, 0
 .L02015C58: .4byte 0x0300004A
 
-	thumb_func_start func_06_02015C5C
-func_06_02015C5C: @ 0x02015C5C
+	thumb_func_start func_common_02015B34
+func_common_02015B34: @ 0x02015C5C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -1796,7 +990,7 @@ func_common_02015F30: @ 0x020160B8
 	ldrh r0, [r0]
 	cmp r1, r0
 	beq .L02016150
-	ldr r0, .L0201614C @ =0x03002E50
+	ldr r0, .L0201614C @ =gUnk_Sio_03002E40
 	movs r1, #0x1e
 	strb r1, [r0]
 	ldrb r1, [r2, #6]
@@ -1824,7 +1018,7 @@ func_common_02015F30: @ 0x020160B8
 	adds r1, r1, r7
 	b .L020161BE
 	.align 2, 0
-.L0201614C: .4byte 0x03002E50
+.L0201614C: .4byte gUnk_Sio_03002E40
 .L02016150:
 	movs r2, #0
 	ldrh r1, [r6, #4]
@@ -1853,7 +1047,7 @@ func_common_02015F30: @ 0x020160B8
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne .L020161D4
-	ldr r0, .L020161C8 @ =0x03002E50
+	ldr r0, .L020161C8 @ =gUnk_Sio_03002E40
 	movs r1, #0x1e
 	strb r1, [r0]
 	ldr r5, .L020161CC @ =gUnk_Sio_02018648
@@ -1888,7 +1082,7 @@ func_common_02015F30: @ 0x020160B8
 	strb r0, [r1]
 	b .L020160CA
 	.align 2, 0
-.L020161C8: .4byte 0x03002E50
+.L020161C8: .4byte gUnk_Sio_03002E40
 .L020161CC: .4byte gUnk_Sio_02018648
 .L020161D0: .4byte 0x000007C6
 .L020161D4:
@@ -1917,7 +1111,7 @@ func_common_02015F30: @ 0x020160B8
 	strb r0, [r1]
 	ldr r1, [sp]
 	strb r5, [r1]
-	ldr r0, .L02016244 @ =0x03002E50
+	ldr r0, .L02016244 @ =gUnk_Sio_03002E40
 	movs r1, #0x1e
 	strb r1, [r0]
 	ldr r3, [r4]
@@ -1947,7 +1141,7 @@ func_common_02015F30: @ 0x020160B8
 	.align 2, 0
 .L0201623C: .4byte gUnk_Sio_02018648
 .L02016240: .4byte 0x000007C6
-.L02016244: .4byte 0x03002E50
+.L02016244: .4byte gUnk_Sio_03002E40
 
 	thumb_func_start func_common_020160C0
 func_common_020160C0: @ 0x02016248
@@ -2778,8 +1972,8 @@ func_06_0201685C: @ 0x0201685C
 	.align 2, 0
 .L02016888: .4byte gBuf
 
-	thumb_func_start func_common_020166B8
-func_common_020166B8: @ 0x0201688C
+	thumb_func_start Decompress
+Decompress: @ 0x0201688C
 	push {r4, r5, lr}
 	adds r3, r0, #0
 	adds r4, r1, #0
@@ -2821,11 +2015,11 @@ func_06_020168CC: @ 0x020168CC
 	strh r1, [r0]
 	movs r0, #0
 	bl InitBgs
-	ldr r0, .L02016944 @ =.L02017BAC
+	ldr r0, .L02016944 @ =Pal_Unk_02017C74
 	movs r1, #0
 	movs r2, #0x20
 	bl ApplyPaletteExt
-	ldr r4, .L02016948 @ =.L0201755C
+	ldr r4, .L02016948 @ =Img_Unk_02017374
 	movs r0, #1
 	bl GetBgChrOffset
 	adds r1, r0, #0
@@ -2833,10 +2027,10 @@ func_06_020168CC: @ 0x020168CC
 	lsls r0, r0, #0x13
 	adds r1, r1, r0
 	adds r0, r4, #0
-	bl func_common_020166B8
+	bl Decompress
 	ldr r0, .L0201694C @ =.L02017910
-	ldr r1, .L02016950 @ =0x0202B220
-	bl func_common_020166B8
+	ldr r1, .L02016950 @ =gBg1Tm
+	bl Decompress
 	movs r0, #2
 	bl EnableBgSync
 	ldr r0, .L02016954 @ =.L0201861C
@@ -2862,10 +2056,10 @@ func_06_020168CC: @ 0x020168CC
 	bx r0
 	.align 2, 0
 .L02016940: .4byte 0x00002586
-.L02016944: .4byte .L02017BAC
-.L02016948: .4byte .L0201755C
+.L02016944: .4byte Pal_Unk_02017C74
+.L02016948: .4byte Img_Unk_02017374
 .L0201694C: .4byte .L02017910
-.L02016950: .4byte 0x0202B220
+.L02016950: .4byte gBg1Tm
 .L02016954: .4byte .L0201861C
 .L02016958: .4byte gSramMain
 .L0201695C: .4byte .L020185F4
@@ -3308,7 +2502,8 @@ Checksum32_thm:
 
 	.section ".rodata"
 
-.L0201755C:
+	.global Img_Unk_02017374
+Img_Unk_02017374:
 	.byte 0x10, 0x00, 0x08, 0x00
 	.byte 0x30, 0x00, 0x00, 0xF0, 0x01, 0xF0, 0x01, 0x00, 0x00, 0x30, 0x33, 0x00, 0x33, 0x33, 0x23, 0x22
 	.byte 0x22, 0x22, 0x30, 0x33, 0x40, 0x32, 0x20, 0x07, 0x23, 0x32, 0x22, 0x23, 0x23, 0x33, 0x28, 0x32
@@ -3383,7 +2578,9 @@ Checksum32_thm:
 	.byte 0xFF, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0
 	.byte 0x01, 0xFF, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01
 	.byte 0xF0, 0x01, 0xFC, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0x20, 0x01, 0x00
-.L020179E0:
+
+	.global Tm_Unk_02017AA8
+Tm_Unk_02017AA8:
 	.byte 0x10, 0xE5, 0x08, 0x00, 0x3F, 0x00, 0x00, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0
 	.byte 0x01, 0xF0, 0x01, 0xFF, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01
 	.byte 0xF0, 0x01, 0xF0, 0x01, 0xFF, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0, 0x01, 0xF0
@@ -3413,16 +2610,15 @@ Checksum32_thm:
 	.byte 0xE8, 0x00, 0xB6, 0x43, 0x02, 0x20, 0xC0, 0x4D, 0x4F, 0x10, 0x44, 0x45, 0x04, 0x00, 0x07, 0x20
 	.byte 0x20, 0x00, 0x02, 0x04, 0x56, 0x45, 0x52, 0x20, 0x08, 0x00, 0x0B, 0x49, 0x53, 0x00, 0x2D, 0x41
 	.byte 0x53, 0x43, 0x30, 0x33, 0x45, 0x4E, 0x20, 0x44, 0x20, 0x10, 0x23, 0x00
-.L02017BAC:
+
+	.global Pal_Unk_02017C74
+Pal_Unk_02017C74:
 	.byte 0x00, 0x00, 0x34, 0x6E
 	.byte 0xFF, 0x7F, 0xC7, 0x14, 0x11, 0x3E, 0xD7, 0x5A, 0xC7, 0x14, 0xCA, 0x7D, 0xF8, 0x7F, 0x63, 0x2C
 	.byte 0xB5, 0x26, 0xDF, 0x47, 0x09, 0x05, 0x8E, 0x26, 0xFD, 0x6F, 0x63, 0x0D
-.L02017BCC:
-	.byte 0x53, 0x55, 0x4D, 0x00
-.L02017BD0:
-	.byte 0x54, 0x4F, 0x54, 0x41, 0x4C, 0x00, 0x00, 0x00
-.L02017BD8:
-	.byte 0x52, 0x45, 0x43, 0x56, 0x00, 0x00, 0x00, 0x00
+
+	.section ".rodata_2"
+
 	.byte 0x53, 0x49, 0x4F, 0x43, 0x4F, 0x4E, 0x00, 0x00, 0x53, 0x49, 0x4F, 0x56, 0x53, 0x59, 0x4E, 0x43
 	.byte 0x00, 0x00, 0x00, 0x00, 0x53, 0x49, 0x4F, 0x4D, 0x41, 0x49, 0x4E, 0x00
 .L02017BFC:

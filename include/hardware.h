@@ -368,6 +368,9 @@ extern struct KeySt * SHOULD_BE_CONST gKeySt;
 #define TM_OFFSET(x, y) (((y) << 5) + (x))
 #define PAL_OFFSET(pal_id, color_num) (0x10 * (pal_id) + (color_num))
 
+#define ApplyPalettes(src, num, count) ApplyPaletteExt((src), 0x20 * (num), 0x20 * (count))
+#define ApplyPalette(src, num) ApplyPalettes((src), (num), 1)
+
 #define SetDispEnable(bg0, bg1, bg2, bg3, obj)                                                                         \
     gDispIo.disp_ct.bg0_enable = (bg0);                                                                                \
     gDispIo.disp_ct.bg1_enable = (bg1);                                                                                \

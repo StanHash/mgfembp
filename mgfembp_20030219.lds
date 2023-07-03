@@ -27,6 +27,7 @@ gUnk_Sio_03001C30 = 0x03001C30;
 gUnk_Sio_03001C34 = 0x03001C34;
 gSioStateId = 0x03001CC8;
 gUnits = 0x03001CD0;
+gUnk_Sio_03002E40 = 0x03002E40;
 gUnk_Sio_03002E50 = 0x03002E50;
 ReadSramFast = 0x03002ED0;
 VerifySramFast = 0x03002ED4;

@@ -29,6 +29,7 @@ gUnk_Sio_03001C34 = 0x03001C3C;
 gUnk_Sio_06_03001CC8 = 0x03001CC8;
 gSioStateId = 0x03001CD0;
 gUnits = 0x03001CE0;
+gUnk_Sio_03002E40 = 0x03002E50;
 gUnk_Sio_06_03002E58 = 0x03002E58;
 gUnk_Sio_03002E50 = 0x03002E60;
 ReadSramFast = 0x03002EE0;
@@ -79,6 +80,8 @@ SECTIONS
         . = ALIGN(4); src/game_control.o(.rodata);
         . = ALIGN(4); src/save.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
+        . = ALIGN(4); src/sio.o(.rodata);
+        . = ALIGN(4); asm/*.o(.rodata_2);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
 
