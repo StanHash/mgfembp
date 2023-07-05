@@ -108,6 +108,38 @@ struct Dat
     struct DatBody body;
 };
 
+struct SioBigSendProc
+{
+    /* 00 */ PROC_HEADER;
+    /* 29 */ STRUCT_PAD(0x29, 0x2C); // implicit
+    /* 2C */ void (*func)(struct SioBigSendProc *);
+    /* 30 */ void const * data;
+    /* 34 */ u8 unk_34;
+    /* 35 */ STRUCT_PAD(0x35, 0x36); // implicit
+    /* 36 */ u16 block_count;
+    /* 38 */ u16 current_block;
+    /* 3A */ u8 last_block_len;
+    /* 3B */ u8 completion_percent;
+    /* 3C */ u8 unk_3C;
+};
+
+struct SioBigReceiveProc
+{
+    // identical to SioBigSendProc, except data is non const pointer
+
+    /* 00 */ PROC_HEADER;
+    /* 29 */ STRUCT_PAD(0x29, 0x2C); // implicit
+    /* 2C */ void (*func)(struct SioBigReceiveProc *);
+    /* 30 */ void * data;
+    /* 34 */ u8 unk_34;
+    /* 35 */ STRUCT_PAD(0x35, 0x36); // implicit
+    /* 36 */ u16 block_count;
+    /* 38 */ u16 current_block;
+    /* 3A */ u8 last_block_len;
+    /* 3B */ u8 completion_percent;
+    /* 3C */ u8 unk_3C;
+};
+
 struct Unk_Sio EWRAM_DATA gUnk_Sio_0202F8B0 = { 0 };
 struct Unk_Sio * SHOULD_BE_CONST gUnk_Sio_02018648 = &gUnk_Sio_0202F8B0;
 
@@ -1189,7 +1221,7 @@ void * func_common_02015E28(u32 * out)
     return &gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C4].unk_04;
 }
 
-int func_common_02015E88(u8 * ip, fu16 r7)
+int func_common_02015E88(u8 const * src, fu16 len)
 {
     // TODO: clean up
 
@@ -1208,13 +1240,13 @@ int func_common_02015E88(u8 * ip, fu16 r7)
     dat->head.unk_00 = SIO_UNK_CF;
     dat->head.unk_01 = gUnk_Sio_02018648->unk_006;
     dat->head.unk_02 = gUnk_Sio_02018648->unk_022;
-    dat->body.unk_04 = r7;
+    dat->body.unk_04 = len;
 
     gUnk_Sio_02018648->unk_022++;
 
-    for (i = 0; i < r7; i++)
+    for (i = 0; i < len; i++)
     {
-        dat->body.unk_06[i] = ip[i];
+        dat->body.unk_06[i] = src[i];
     }
 
     result = gUnk_Sio_02018648->unk_7C5;
@@ -1226,3 +1258,445 @@ int func_common_02015E88(u8 * ip, fu16 r7)
 
     return result;
 }
+
+int func_common_02015F30(void * dst, u8 * arg_1, bool (*verify)(void *))
+{
+    fu8 i;
+    fu8 out_1;
+
+    // TODO: good type
+    struct Dat * dat = (void *)&gUnk_Sio_02018648->unk_594[gUnk_Sio_02018648->unk_7C6].unk_04;
+
+    if (dat->head.unk_00 != SIO_UNK_CF || dat->head.unk_01 == gUnk_Sio_02018648->unk_006)
+        return 0;
+
+    if (dat->head.unk_02 != gUnk_Sio_02018648->unk_026[dat->head.unk_01])
+    {
+        gUnk_Sio_03002E40.unk_00 = SIO_UNK_CE;
+        gUnk_Sio_03002E40.unk_01 = (gUnk_Sio_02018648->unk_006 << 4) | dat->head.unk_01;
+        gUnk_Sio_03002E40.unk_02 = gUnk_Sio_02018648->unk_026[dat->head.unk_01];
+
+        func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
+
+        dat->head.unk_00 = 0;
+
+        gUnk_Sio_02018648->unk_7C6 += 1;
+        gUnk_Sio_02018648->unk_7C6 &= 3;
+
+        // recursion!
+        return func_common_02015F30(dst, arg_1, verify);
+    }
+    else
+    {
+        for (i = 0; i < dat->body.unk_04; i++)
+        {
+            ((u8 *)dst)[i] = dat->body.unk_06[i];
+        }
+
+        if (verify != NULL && !verify(dst))
+        {
+            gUnk_Sio_03002E40.unk_00 = SIO_UNK_CE;
+            gUnk_Sio_03002E40.unk_01 = (gUnk_Sio_02018648->unk_006 << 4) | dat->head.unk_01;
+            gUnk_Sio_03002E40.unk_02 = gUnk_Sio_02018648->unk_026[dat->head.unk_01];
+
+            func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
+
+            dat->head.unk_00 = 0;
+
+            gUnk_Sio_02018648->unk_7C6 += 1;
+            gUnk_Sio_02018648->unk_7C6 &= 3;
+
+            // recursion!
+            return func_common_02015F30(dst, arg_1, verify);
+        }
+        else
+        {
+            dat->head.unk_00 = 0;
+
+            out_1 = dat->head.unk_01;
+
+            gUnk_Sio_02018648->unk_026[dat->head.unk_01] += 1;
+
+            gUnk_Sio_02018648->unk_7C6 += 1;
+            gUnk_Sio_02018648->unk_7C6 &= 3;
+
+            *arg_1 = out_1;
+
+            gUnk_Sio_03002E40.unk_00 = SIO_UNK_CE;
+            gUnk_Sio_03002E40.unk_01 = (gUnk_Sio_02018648->unk_006 << 4) | dat->head.unk_01;
+            gUnk_Sio_03002E40.unk_02 = gUnk_Sio_02018648->unk_026[dat->head.unk_01];
+
+            func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
+
+            return dat->body.unk_04;
+        }
+    }
+}
+
+void func_common_020160C0(void)
+{
+    int i;
+
+    u16 abc = 0x7FFF;
+
+    gUnk_Sio_02018648->unk_001 = 0;
+
+    func_common_02015CEC(&abc, 1);
+
+    s_unk_0300004A = s_unk_03000048;
+
+    for (i = 0; i < 4; i++)
+    {
+        s_unk_03000058[i] = s_unk_03000050[i];
+    }
+}
+
+void func_common_02016114(int arg_0)
+{
+    gUnk_Sio_02018648->unk_021 = arg_0;
+}
+
+void func_common_02016124(void)
+{
+    int i;
+
+    u16 abc = 0x7FFF;
+
+    gUnk_Sio_02018648->unk_001 = 0;
+    gUnk_Sio_02018648->unk_7CC = 0;
+
+    func_common_02015CEC(&abc, 1);
+
+    s_unk_0300004A = s_unk_03000048;
+
+    for (i = 0; i < 4; i++)
+    {
+        s_unk_03000058[i] = s_unk_03000050[i];
+    }
+
+    gUnk_Sio_02018648->unk_7CE = 0;
+    gUnk_Sio_02018648->unk_001 = 3;
+}
+
+void func_common_02016198(void)
+{
+    int i;
+
+    u16 abc = 0x2586;
+
+    gUnk_Sio_02018648->unk_004 = 0;
+    gUnk_Sio_02018648->unk_001 = 0;
+    gUnk_Sio_02018648->unk_7CC = 15;
+
+    s_unk_0300004A = s_unk_03000048;
+
+    for (i = 0; i < 4; i++)
+    {
+        s_unk_03000058[i] = s_unk_03000050[i];
+    }
+
+    gUnk_Sio_02018648->unk_001 = 1;
+    gUnk_Sio_02018648->unk_004 = 6;
+
+    func_common_02015CEC(&abc, -1);
+}
+
+void func_common_02016210(void)
+{
+    int i;
+
+    u16 abc = 0x2586;
+
+    gUnk_Sio_02018648->unk_004 = 0;
+    gUnk_Sio_02018648->unk_001 = 0;
+    gUnk_Sio_02018648->unk_7CC = 24;
+
+    s_unk_0300004A = s_unk_03000048;
+
+    for (i = 0; i < 4; i++)
+    {
+        s_unk_03000058[i] = s_unk_03000050[i];
+    }
+
+    gUnk_Sio_02018648->unk_001 = 1;
+    gUnk_Sio_02018648->unk_004 = 6;
+
+    func_common_02015CEC(&abc, -1);
+}
+
+void func_common_02016288(void)
+{
+    s_unk_0300004A = s_unk_03000048;
+}
+
+#if defined(VER_20030206)
+int func_06_02016424(int player_id)
+{
+    int result;
+
+    if (player_id < 0)
+    {
+        if (s_unk_03000048 > s_unk_0300004A)
+        {
+            result = 0x200 - s_unk_03000048 + s_unk_0300004A;
+        }
+        else
+        {
+            result = s_unk_0300004A - s_unk_03000048;
+        }
+    }
+    else
+    {
+        if (s_unk_03000050[player_id] > s_unk_03000058[player_id])
+        {
+            result = 0x200 - s_unk_03000050[player_id] + s_unk_03000058[player_id];
+        }
+        else
+        {
+            result = s_unk_03000058[player_id] - s_unk_03000050[player_id];
+        }
+    }
+
+    return result;
+}
+#endif
+
+void func_common_0201629C(struct SioBigSendProc * proc)
+{
+    int i;
+    u8 data[4];
+
+    gUnk_Sio_02018648->unk_024 = gUnk_Sio_02018648->unk_022 = gUnk_Sio_02018648->unk_02E = 0;
+
+    gUnk_Sio_02018648->unk_026[0] = gUnk_Sio_02018648->unk_026[1] = gUnk_Sio_02018648->unk_026[2] =
+        gUnk_Sio_02018648->unk_026[3] = 0;
+
+    func_02014DF4();
+
+    data[0] = proc->unk_34;
+    data[1] = proc->block_count >> 8;
+    data[2] = proc->block_count & 0xFF;
+    data[3] = proc->last_block_len;
+
+    func_common_02015E88(data, sizeof(data));
+    gUnk_Sio_02018648->unk_02E = 1;
+}
+
+void func_common_020162FC(struct SioBigSendProc * proc)
+{
+    if (proc->func != NULL)
+        proc->func(proc);
+
+    if (gUnk_Sio_02018648->unk_02E == 0)
+    {
+        if (proc->current_block != gUnk_Sio_02018648->unk_024 - 1)
+        {
+            proc->data += 0x80 - 6;
+            proc->completion_percent = proc->current_block * 100 / proc->block_count;
+            proc->current_block++;
+        }
+
+        func_common_02015E88(proc->data, 0x80 - 6);
+        gUnk_Sio_02018648->unk_02E = 1;
+
+        gUnk_Sio_02018648->unk_010 = 0;
+
+        if (proc->current_block >= proc->block_count)
+            Proc_Break(proc);
+    }
+}
+
+void func_common_0201636C(void)
+{
+    gUnk_Sio_02018648->unk_024 = gUnk_Sio_02018648->unk_022 = gUnk_Sio_02018648->unk_02E = 0;
+
+    gUnk_Sio_02018648->unk_026[0] = gUnk_Sio_02018648->unk_026[1] = gUnk_Sio_02018648->unk_026[2] =
+        gUnk_Sio_02018648->unk_026[3] = 0;
+
+    func_02014DF4();
+}
+
+void func_common_02016394(struct SioBigReceiveProc * proc)
+{
+    u8 data[4];
+    u8 id;
+
+    fu16 got = func_common_02015F30(&data, &id, NULL);
+
+    if (got != 0)
+    {
+        proc->unk_34 = data[0];
+        proc->block_count = (data[1] << 8) + (data[2] & 0xFF);
+        proc->last_block_len = data[3];
+
+        Proc_Break(proc);
+    }
+}
+
+void func_common_020163D8(struct SioBigReceiveProc * proc)
+{
+    int i;
+    u8 id;
+
+    u8 * buf = gBuf;
+
+    if (proc->current_block < proc->block_count - 1)
+    {
+        fu16 got = func_common_02015F30(proc->data, &id, NULL);
+
+        if (got != 0)
+        {
+            proc->data += 0x80 - 6;
+            proc->completion_percent = proc->current_block * 100 / proc->block_count;
+            proc->current_block++;
+        }
+    }
+    else
+    {
+        fu16 got = func_common_02015F30(buf, &id, NULL);
+
+        if (got != 0)
+        {
+            for (i = 0; i < proc->last_block_len; i++)
+            {
+                *((u8 *)proc->data) = buf[i];
+                proc->data++;
+            }
+
+            proc->completion_percent = proc->current_block * 100 / proc->block_count;
+            proc->current_block++;
+        }
+    }
+
+    if (proc->func != NULL)
+        proc->func(proc);
+
+    if (proc->current_block >= proc->block_count)
+        Proc_Break(proc);
+}
+
+// clang-format off
+
+struct ProcScr SHOULD_BE_CONST ProcScr_SioBigSend[] =
+{
+    PROC_SLEEP(0),
+    PROC_CALL(func_common_0201629C),
+    PROC_REPEAT(func_common_020162FC),
+    PROC_END,
+};
+
+struct ProcScr SHOULD_BE_CONST ProcScr_SioBigReceive[] =
+{
+    PROC_SLEEP(0),
+    PROC_CALL(func_common_0201636C),
+    PROC_REPEAT(func_common_02016394),
+    PROC_REPEAT(func_common_020163D8),
+    PROC_END,
+};
+
+// clang-format on
+
+int StartSioBigSend(void * data, u32 len, void (*func)(struct SioBigSendProc *), fu8 arg_3, AnyProc * parent)
+{
+    struct SioBigSendProc * proc;
+
+    fu8 last_block_len;
+    fu16 block_count;
+
+    if (len > (0x80 - 6) * UINT16_MAX)
+        return -1;
+
+    block_count = len / (0x80 - 6) + 1;
+
+    if (len % (0x80 - 6) != 0)
+        block_count++;
+
+    last_block_len = len % (0x80 - 6);
+
+    proc = SpawnProcLocking(ProcScr_SioBigSend, parent);
+
+    proc->data = data;
+    proc->unk_34 = arg_3;
+    proc->func = func;
+    proc->block_count = block_count;
+    proc->last_block_len = last_block_len;
+    proc->completion_percent = 0;
+    proc->current_block = 0;
+    proc->unk_3C = 0;
+
+    return 0;
+}
+
+void StartSioBigReceive(void * data, void (*func)(struct SioBigReceiveProc *), AnyProc * parent)
+{
+    struct SioBigReceiveProc * proc;
+
+    proc = SpawnProcLocking(ProcScr_SioBigReceive, parent);
+
+    proc->func = func;
+    proc->data = data;
+    proc->completion_percent = 0;
+    proc->current_block = 0;
+    proc->unk_3C = 0;
+}
+
+bool IsSioBigTransferActive(void)
+{
+    if (FindProc(ProcScr_SioBigSend) == NULL && FindProc(ProcScr_SioBigReceive) == NULL)
+        return FALSE;
+
+    return TRUE;
+}
+
+int func_common_0201655C(u8 const * src, u8 * dst)
+{
+    int len = 0;
+
+    while (*src != 0)
+    {
+        *dst++ = *src++;
+        len++;
+    }
+
+    *dst++ = *src++;
+
+    return len;
+}
+
+void func_common_02016578(void)
+{
+    func_common_02014FE8();
+    func_02014F80();
+
+    gUnk_Sio_02018648->unk_001 = 1;
+    gUnk_Sio_02018648->unk_004 = 0;
+}
+
+void func_common_02016598(AnyProc * proc)
+{
+    u16 var = 0x2586;
+
+    if (func_02014C94() != -1)
+    {
+        gUnk_Sio_02018648->unk_011 = 0;
+        gUnk_Sio_02018648->unk_004 = 5;
+        gUnk_Sio_02018648->unk_006 = func_02014DB0();
+
+        func_common_02015CEC(&var, -1);
+
+        Proc_Break(proc);
+    }
+}
+
+// clang-format off
+
+struct ProcScr SHOULD_BE_CONST ProcScr_Unk_02018694[] =
+{
+    PROC_NAME("SIOCON"),
+    PROC_15,
+    PROC_CALL(func_common_02016578),
+    PROC_REPEAT(func_common_02016598),
+    PROC_END,
+};
+
+// clang-format on

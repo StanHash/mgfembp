@@ -77,6 +77,8 @@ SECTIONS
         . = ALIGN(4); src/game_control.o(.rodata);
         . = ALIGN(4); src/save.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
+        . = ALIGN(4); src/sio.o(.rodata);
+        . = ALIGN(4); asm/*.o(.rodata_2);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
 
