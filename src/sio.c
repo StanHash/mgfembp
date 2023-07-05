@@ -33,12 +33,29 @@ enum
     SIO_UNK_CF,
 };
 
+// TODO: clean up structs
+
+struct Sio_Unk_03002E40
+{
+    /* 00 */ u8 unk_00;
+    /* 01 */ u8 unk_01;
+    /* 02 */ u16 unk_02;
+};
+
+struct DatBody
+{
+    u16 unk_04;
+    u8 unk_06[0x80];
+};
+
 struct Unk_Sio_134
 {
     /* 00 */ u8 unk_00;
     /* 01 */ STRUCT_PAD(0x01, 0x04);
     /* 04 */ u8 unk_04;
-    /* 05 */ STRUCT_PAD(0x05, 0x0A);
+    /* 05 */ u8 unk_05;
+    /* 06 */ u16 unk_06;
+    /* 08 */ u16 unk_08;
     /* 0A */ u8 unk_0A[0x80];
     /* 8A */ STRUCT_PAD(0x8A, 0x8C);
     /* 8C */ // end
@@ -85,11 +102,10 @@ struct Unk_Sio
     /* 7CE */ u16 unk_7CE;
 };
 
-struct Sio_Unk_03002E40
+struct Dat
 {
-    /* 00 */ u8 unk_00;
-    /* 01 */ u8 unk_01;
-    /* 02 */ u16 unk_02;
+    struct Sio_Unk_03002E40 head;
+    struct DatBody body;
 };
 
 struct Unk_Sio EWRAM_DATA gUnk_Sio_0202F8B0 = { 0 };
@@ -101,7 +117,7 @@ u16 EWRAM_DATA gUnk_Sio_02030480[0x200][4] = { 0 };
 static u8 s_sio_cnt;
 static int s_sio_id;
 
-static u8 * s_unk_03000040;
+static struct Unk_Sio_134 * s_unk_03000040;
 
 static u32 s_unk_03000044;
 static u16 s_unk_03000048;
@@ -557,9 +573,7 @@ void func_common_02015438(void)
 
                 if (something != NULL)
                 {
-                    fi16 var_b = func_common_02015A3C(something, var_00 + 6);
-
-                    if (var_b > 0)
+                    if (func_common_02015A3C(something, var_00 + 6) > 0)
                     {
                         gUnk_Sio_02018648->unk_010 = 0;
                         gUnk_Sio_02018648->unk_011++;
@@ -660,7 +674,7 @@ void func_common_020155AC(void)
                             gUnk_Sio_03002E40.unk_01 = (gUnk_Sio_02018648->unk_006 << 4) | data_a->unk_01;
                             gUnk_Sio_03002E40.unk_02 = gUnk_Sio_02018648->unk_026[data_a->unk_01];
 
-                            func_common_02015A3C(&gUnk_Sio_03002E40, 4);
+                            func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
 
                             goto redo;
                         }
@@ -672,7 +686,7 @@ void func_common_020155AC(void)
                             gUnk_Sio_03002E40.unk_01 = (gUnk_Sio_02018648->unk_006 << 4) | data_a->unk_01;
                             gUnk_Sio_03002E40.unk_02 = gUnk_Sio_02018648->unk_026[data_a->unk_01] + 1;
 
-                            func_common_02015A3C(&gUnk_Sio_03002E40, 4);
+                            func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
                         }
 
                         break;
@@ -688,7 +702,7 @@ void func_common_020155AC(void)
                             gUnk_Sio_03002E40.unk_01 = gUnk_Sio_02018648->unk_006;
                             gUnk_Sio_03002E40.unk_02 = i;
 
-                            func_common_02015A3C(&gUnk_Sio_03002E40, 4);
+                            func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
                         }
 
                         break;
@@ -702,7 +716,7 @@ void func_common_020155AC(void)
                         gUnk_Sio_03002E40.unk_01 = gUnk_Sio_02018648->unk_006;
                         gUnk_Sio_03002E40.unk_02 = i;
 
-                        func_common_02015A3C(&gUnk_Sio_03002E40, 4);
+                        func_common_02015A3C(&gUnk_Sio_03002E40, sizeof(gUnk_Sio_03002E40));
                     }
 
                     break;
@@ -724,7 +738,7 @@ void func_common_020155AC(void)
                                     (data_b->unk_02 == (u16)(gUnk_Sio_02018648->unk_024 + 1)))
                                 {
                                     gUnk_Sio_02018648->unk_00F |= 1 << (data_b->unk_01 >> 4);
-                                    s_unk_03000040[0] = gUnk_Sio_02018648->unk_00F;
+                                    s_unk_03000040->unk_00 = gUnk_Sio_02018648->unk_00F;
 
                                     if ((gUnk_Sio_02018648->unk_00F & gUnk_Sio_02018648->unk_009) ==
                                         gUnk_Sio_02018648->unk_009)
@@ -776,4 +790,439 @@ void func_common_020155AC(void)
             }
         }
     }
+}
+
+void func_common_020158D0(void)
+{
+}
+
+int func_common_020158D4(void)
+{
+    int i;
+
+    fu8 count = 0;
+
+    for (i = 0; i < 4; i++)
+    {
+        if (func_common_0201592C(i) == TRUE)
+            count++;
+    }
+
+    return count;
+}
+
+int func_common_02015900(void)
+{
+    int i;
+
+    fu8 count = 0;
+
+    for (i = 0; i < 4; i++)
+    {
+        if (func_common_0201594C(i) == TRUE)
+            count++;
+    }
+
+    return count;
+}
+
+bool func_common_0201592C(fu8 arg_0)
+{
+    if (((gUnk_Sio_02018648->unk_009 >> arg_0) & 1) != 0)
+        return TRUE;
+
+    return FALSE;
+}
+
+bool func_common_0201594C(fu8 arg_0)
+{
+    if (((gUnk_Sio_02018648->unk_008 >> arg_0) & 1) != 0)
+        return TRUE;
+
+    return FALSE;
+}
+
+bool func_common_0201596C(void)
+{
+    int old_002 = gUnk_Sio_02018648->unk_002;
+    gUnk_Sio_02018648->unk_002 = 0;
+
+    if ((old_002 & 8) == 0 && (REG_SIOCNT & SIO_MULTI_SD) == 0)
+    {
+        gUnk_Sio_02018648->unk_020++;
+    }
+    else
+    {
+        gUnk_Sio_02018648->unk_020 = 0;
+    }
+
+    if (gUnk_Sio_02018648->unk_020 > 10)
+        return FALSE;
+
+    return TRUE;
+}
+
+int func_common_020159C0(void)
+{
+    if (gUnk_Sio_02018648->unk_7C5 >= gUnk_Sio_02018648->unk_7C4)
+    {
+        return gUnk_Sio_02018648->unk_7C5 - gUnk_Sio_02018648->unk_7C4;
+    }
+    else
+    {
+        return 8 + gUnk_Sio_02018648->unk_7C5 - gUnk_Sio_02018648->unk_7C4;
+    }
+}
+
+bool func_common_020159F0(void)
+{
+    int i, count = 0;
+
+    for (i = 0; i < 4; i++)
+    {
+        if (gUnk_Sio_02018648->unk_00B[i] == 5)
+            count++;
+    }
+
+#if defined(VER_20030206)
+    DebugPutObjNumberHex(0x10, 0x20, gUnk_Sio_02018648->unk_009, 2);
+    DebugPutObjNumberHex(0x10, 0x28, count, 2);
+    DebugPutObjNumberHex(0x40, 0x28, gUnk_Sio_02018648->unk_006, 2);
+#endif
+
+    if ((gUnk_Sio_02018648->unk_009 == 0x3 && count == 2) || (gUnk_Sio_02018648->unk_009 == 0x7 && count == 3) ||
+        (gUnk_Sio_02018648->unk_009 == 0xF && count == 4))
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+fi16 func_common_02015A3C(void const * src, fu16 len)
+{
+#define SRC_U16 ((u16 const *)src)
+
+    int i;
+
+    u16 magic;
+
+    u16 sum_a = 0;
+    u16 sum_b = 0;
+
+    fu16 cur = s_unk_0300004A;
+
+    if (len > 0x80)
+        return -1;
+
+    len = len / 2;
+    magic = 0x4FFF;
+    sum_a = magic + len;
+
+    // write headers
+
+    gUnk_Sio_02030080[cur] = magic;
+    cur = cur + 1;
+    cur = cur & 0x1FF;
+
+    if (cur == s_unk_03000048)
+        return -1;
+
+    gUnk_Sio_02030080[cur] = len;
+    cur = cur + 1;
+    cur = cur & 0x1FF;
+
+    if (cur == s_unk_03000048)
+        return -1;
+
+    // compute checksum
+
+    for (i = 0; i < len; i++)
+    {
+        u32 frag = SRC_U16[i] * (i + 1);
+
+        sum_a = sum_a + frag;
+        sum_b = sum_b + ~frag;
+    }
+
+    // write checksum
+
+    gUnk_Sio_02030080[cur] = sum_a;
+    cur = cur + 1;
+    cur = cur & 0x1FF;
+
+    if (cur == s_unk_03000048)
+        return -1;
+
+    gUnk_Sio_02030080[cur] = sum_b;
+    cur = cur + 1;
+    cur = cur & 0x1FF;
+
+    if (cur == s_unk_03000048)
+        return -1;
+
+    // write data
+
+    for (i = 0; i < len; i++)
+    {
+        gUnk_Sio_02030080[cur] = SRC_U16[i];
+        cur = cur + 1;
+        cur = cur & 0x1FF;
+
+        if (cur == s_unk_03000048)
+            return -1;
+    }
+
+    s_unk_0300004A = cur;
+
+    return len;
+
+#undef SRC_U16
+}
+
+fi16 func_common_02015B34(fi8 player_id, void * dst)
+{
+#define DST_U16 ((u16 *)dst)
+
+    int i;
+
+    u16 magic;
+
+    u16 sum_a = 0;
+    u16 recv_sum_a;
+    u16 sum_b = 0;
+    u16 recv_sum_b;
+
+    fu16 count;
+    fu16 lookahead;
+    fu16 len;
+
+    if (s_unk_03000050[player_id] == s_unk_03000058[player_id])
+        return -2;
+
+    if (gUnk_Sio_02030480[s_unk_03000050[player_id]][player_id] != 0x4FFF)
+    {
+        while (s_unk_03000050[player_id] != s_unk_03000058[player_id])
+        {
+            s_unk_03000050[player_id] += 1;
+            s_unk_03000050[player_id] &= 0x1FF;
+
+            if (gUnk_Sio_02030480[s_unk_03000050[player_id]][player_id] == 0x4FFF &&
+                s_unk_03000050[player_id] != s_unk_03000058[player_id])
+            {
+                goto yes;
+            }
+        }
+
+        return -4;
+    }
+
+yes:
+    if (s_unk_03000058[player_id] < s_unk_03000050[player_id])
+    {
+        count = 0x200 - s_unk_03000050[player_id] + s_unk_03000058[player_id];
+    }
+    else
+    {
+        count = s_unk_03000058[player_id] - s_unk_03000050[player_id];
+    }
+
+    if (count <= 4)
+        return -4;
+
+    if (s_unk_03000050[player_id] + 1 < 0x200)
+    {
+        lookahead = s_unk_03000050[player_id] + 1;
+    }
+    else
+    {
+        lookahead = 0;
+    }
+
+    len = gUnk_Sio_02030480[lookahead][player_id];
+
+    if (len > 0x80)
+    {
+        s_unk_03000050[player_id] += 1;
+        s_unk_03000050[player_id] &= 0x1FF;
+
+#if defined(VER_20030206)
+        gUnk_Sio_06_03002E58[player_id]++;
+        gUnk_Sio_06_03001CC8[player_id]++;
+#endif
+
+        return -4;
+    }
+
+    if (len + 6 > count)
+    {
+        return -2;
+    }
+
+    s_unk_03000050[player_id] += 2;
+    s_unk_03000050[player_id] &= 0x1FF;
+
+    recv_sum_a = gUnk_Sio_02030480[s_unk_03000050[player_id]][player_id];
+
+    s_unk_03000050[player_id] += 1;
+    s_unk_03000050[player_id] &= 0x1FF;
+
+    recv_sum_b = gUnk_Sio_02030480[s_unk_03000050[player_id]][player_id];
+
+    s_unk_03000050[player_id] += 1;
+    s_unk_03000050[player_id] &= 0x1FF;
+
+    sum_a += 0x4FFF + len;
+
+    for (i = 0; i < len; i++)
+    {
+        u32 data = gUnk_Sio_02030480[s_unk_03000050[player_id]][player_id];
+        u32 frag = data * (i + 1);
+
+        sum_a = sum_a + frag;
+        sum_b = sum_b + ~frag;
+
+        DST_U16[i] = data;
+
+        s_unk_03000050[player_id] += 1;
+        s_unk_03000050[player_id] &= 0x1FF;
+    }
+
+    if (sum_a != recv_sum_a || sum_b != recv_sum_b)
+    {
+#if defined(VER_20030206)
+        gUnk_Sio_06_03001C30[player_id]++;
+        gUnk_Sio_06_03001CC8[player_id]++;
+#endif
+
+        return -3;
+    }
+
+#if defined(VER_20030206)
+    gUnk_Sio_06_03001CC8[player_id]++;
+#endif
+
+    return len * 2;
+
+#undef DST_U16
+}
+
+int func_common_02015CEC(u16 * arg_0, int arg_1)
+{
+    if (gUnk_Sio_02018648->unk_006 == -1)
+        return -1;
+
+    SIO->siodata = *arg_0;
+
+    if (gUnk_Sio_02018648->unk_006 == 0 && arg_1 < 0)
+    {
+        REG_SIOCNT |= SIO_ENABLE;
+        REG_TM3CNT = -gUnk_Sio_02018648->unk_7CC;
+        REG_TM3CNT_H = 0xC3; // TODO: constants
+    }
+
+    return 0;
+}
+
+int func_common_02015D48(int unused_0, u16 * arg_1)
+{
+    int i;
+
+    if (s_unk_03000050[0] == s_unk_03000058[0])
+    {
+        *arg_1++ = 0x7FFF;
+        *arg_1++ = 0x7FFF;
+        *arg_1++ = 0x7FFF;
+        *arg_1++ = 0x7FFF;
+
+        return -2;
+    }
+
+    for (i = 0; i < 4; i++)
+    {
+        *arg_1++ = gUnk_Sio_02030480[s_unk_03000050[i]][i];
+
+        s_unk_03000050[i] += 1;
+        s_unk_03000050[i] &= 0x1FF;
+    }
+
+    return 0;
+}
+
+void func_common_02015DB4(void * arg_0)
+{
+    // TODO: clean up
+
+#define INFO ((struct Dat *)arg_0)
+
+    int i;
+
+    struct Unk_Sio_134 * ent = &gUnk_Sio_02018648->unk_594[gUnk_Sio_02018648->unk_7C7];
+
+    ent->unk_04 = INFO->head.unk_00;
+    ent->unk_05 = INFO->head.unk_01;
+    ent->unk_06 = INFO->head.unk_02;
+
+    ent->unk_08 = INFO->body.unk_04;
+
+    for (i = 0; i < INFO->body.unk_04; i++)
+    {
+        ent->unk_0A[i] = INFO->body.unk_06[i];
+    }
+
+    gUnk_Sio_02018648->unk_7C7 += 1;
+    gUnk_Sio_02018648->unk_7C7 &= 3;
+
+#undef INFO
+}
+
+void * func_common_02015E28(u32 * out)
+{
+    // TODO: clean up
+
+    if (gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C4].unk_04 != SIO_UNK_CF)
+        return NULL;
+
+    s_unk_03000040 = &gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C4];
+
+    *out = gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C4].unk_08;
+    return &gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C4].unk_04;
+}
+
+int func_common_02015E88(u8 * ip, fu16 r7)
+{
+    // TODO: clean up
+
+    int result;
+    fu8 i;
+
+    struct Dat * dat;
+
+    s_unk_03000044 = 1;
+
+    gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C5].unk_00 = 0;
+
+    // TODO: good types
+    dat = (void *)&gUnk_Sio_02018648->unk_134[gUnk_Sio_02018648->unk_7C5].unk_04;
+
+    dat->head.unk_00 = SIO_UNK_CF;
+    dat->head.unk_01 = gUnk_Sio_02018648->unk_006;
+    dat->head.unk_02 = gUnk_Sio_02018648->unk_022;
+    dat->body.unk_04 = r7;
+
+    gUnk_Sio_02018648->unk_022++;
+
+    for (i = 0; i < r7; i++)
+    {
+        dat->body.unk_06[i] = ip[i];
+    }
+
+    result = gUnk_Sio_02018648->unk_7C5;
+
+    gUnk_Sio_02018648->unk_7C5 += 1;
+    gUnk_Sio_02018648->unk_7C5 &= 7;
+
+    s_unk_03000044 = 0;
+
+    return result;
 }
