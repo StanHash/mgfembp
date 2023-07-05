@@ -1,5 +1,4 @@
     .syntax unified
-    .text
 
     .macro arm_func_start name
 

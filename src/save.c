@@ -1,81 +1,13 @@
-#include "save_data.h"
-#include "save_util.h"
+#include "save.h"
 
 #include "armfunc.h"
 #include "game_structs.h"
 #include "gbaio.h"
 #include "gbasram.h"
 #include "hardware.h"
+#include "report.h"
 
-#include "unknowns.h"
-
-// start garb
-
-#define UNIT_SAVE_AMOUNT_BLUE 52
-#define UNIT_SAVE_AMOUNT_RED 50
-#define UNIT_SAVE_AMOUNT_GREEN 10
-
-enum
-{
-    // flags for GameSavePackedUnit::flags
-
-    SAVEUNIT_FLAG_DEAD = 1 << 0,
-    SAVEUNIT_FLAG_UNDEPLOYED = 1 << 1,
-    SAVEUNIT_FLAG_SOLOANIM1 = 1 << 2,
-    SAVEUNIT_FLAG_SOLOANIM2 = 1 << 3,
-};
-
-struct GameSavePackedUnit
-{
-    /* 00 */ u32 pid : 7;
-    /*    */ u32 jid : 7;
-    /*    */ u32 level : 5;
-    /*    */ u32 flags : 6;
-    /*    */ u32 exp : 7;
-    /* 04 */ u32 x : 6;
-    /*    */ u32 y : 6;
-    /*    */ u32 max_hp : 6;
-    /*    */ u32 pow : 5;
-    /*    */ u32 skl : 5;
-    /*    */ u32 spd : 5;
-    /*    */ u32 def : 5;
-    /*    */ u32 res : 5;
-    /*    */ u32 lck : 5;
-    /*    */ u32 con : 5;
-    /*    */ u32 mov : 5;
-    /*    */ u32 item_a : 14;
-    /*    */ u32 item_b : 14;
-    /*    */ u32 item_c : 14;
-    /*    */ u32 item_d : 14;
-    /*    */ u32 item_e : 14;
-    /* 14 */ u8 unused_14[2];
-    /* 16 */ u8 wexp[UNIT_WEAPON_EXP_COUNT];
-    /* 1E */ u8 supports[UNIT_SUPPORT_COUNT];
-};
-
-struct GameSaveBlock
-{
-    struct PlaySt play_st;
-    struct GameSavePackedUnit units[UNIT_SAVE_AMOUNT_BLUE];
-    u16 supply_items[SUPPLY_ITEM_COUNT];
-    // struct PidStats pid_stats[PID_STATS_COUNT];
-    // struct ChapterStats chapter_stats[CHAPTER_STATS_COUNT];
-    // u8 permanent_flags[sizeof(gPermanentFlagBits)];
-};
-
-extern struct Unit gUnits[];
-extern void ReadGameSavePackedUnit(struct GameSavePackedUnit const * src, struct Unit * dst);
-
-// end garb
-
-struct SramMain
-{
-    /* 0000 */ struct GlobalSaveInfo head;
-    /* 0020 */ struct SaveBlockInfo block_info[SAVE_COUNT];
-    /* 0090 */ STRUCT_PAD(0x0090, 0x70F4);
-};
-
-char EWRAM_DATA gUnk_0202F8A4[10] = { 0 };
+char EWRAM_DATA gSaveDateBuf[10] = { 0 };
 
 bool EWRAM_DATA gIsSramWorking = FALSE;
 
@@ -133,17 +65,17 @@ void PopulateSaveBlockChecksum(struct SaveBlockInfo * block_info)
 
 char const * func_0201473C(u32 bcd_date)
 {
-    gUnk_0202F8A4[0] = '0' + ((bcd_date >> 20) & 0xF);
-    gUnk_0202F8A4[1] = '0' + ((bcd_date >> 16) & 0xF);
-    gUnk_0202F8A4[2] = '/';
-    gUnk_0202F8A4[3] = '0' + ((bcd_date >> 12) & 0xF);
-    gUnk_0202F8A4[4] = '0' + ((bcd_date >> 8) & 0xF);
-    gUnk_0202F8A4[5] = '/';
-    gUnk_0202F8A4[6] = '0' + ((bcd_date >> 4) & 0xF);
-    gUnk_0202F8A4[7] = '0' + ((bcd_date >> 0) & 0xF);
-    gUnk_0202F8A4[8] = '\0';
+    gSaveDateBuf[0] = '0' + ((bcd_date >> 20) & 0xF);
+    gSaveDateBuf[1] = '0' + ((bcd_date >> 16) & 0xF);
+    gSaveDateBuf[2] = '/';
+    gSaveDateBuf[3] = '0' + ((bcd_date >> 12) & 0xF);
+    gSaveDateBuf[4] = '0' + ((bcd_date >> 8) & 0xF);
+    gSaveDateBuf[5] = '/';
+    gSaveDateBuf[6] = '0' + ((bcd_date >> 4) & 0xF);
+    gSaveDateBuf[7] = '0' + ((bcd_date >> 0) & 0xF);
+    gSaveDateBuf[8] = '\0';
 
-    return gUnk_0202F8A4;
+    return gSaveDateBuf;
 }
 
 void func_02014788(void)
@@ -422,8 +354,8 @@ void ReadGameSavePackedUnit(struct GameSavePackedUnit const * sram_src, struct U
 
     unit->level = save_unit.level;
     unit->exp = save_unit.exp;
-    unit->x = save_unit.pid;
-    unit->y = save_unit.jid;
+    unit->pid = save_unit.pid;
+    unit->jid = save_unit.jid;
     unit->max_hp = save_unit.max_hp;
     unit->pow = save_unit.pow;
     unit->skl = save_unit.skl;

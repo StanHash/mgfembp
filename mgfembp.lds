@@ -25,9 +25,10 @@ IntrMainRam = 0x03001420; /* size: 0800 */
 gSpriteAllocIt = 0x03001C20;
 gUnk_Sio_03001C30 = 0x03001C30;
 gUnk_Sio_03001C34 = 0x03001C34;
+gUnk_03001C40 = 0x03001C40;
 gSioStateId = 0x03001CC8;
 gUnits = 0x03001CD0;
-gUnk_Sio_03002E40 = 0x03002E40;
+gSioMsgBuf = 0x03002E40;
 gUnk_Sio_03002E50 = 0x03002E50;
 ReadSramFast = 0x03002ED0;
 VerifySramFast = 0x03002ED4;
@@ -50,6 +51,7 @@ SECTIONS
         . = ALIGN(4); src/game_control.o(.text);
         . = ALIGN(4); src/save.o(.text);
         . = ALIGN(4); src/sio.o(.text);
+        . = ALIGN(4); src/report.o(.text);
         . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
@@ -78,7 +80,6 @@ SECTIONS
         . = ALIGN(4); src/save.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
         . = ALIGN(4); src/sio.o(.rodata);
-        . = ALIGN(4); asm/*.o(.rodata_2);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
 
@@ -91,6 +92,7 @@ SECTIONS
         . = ALIGN(4); src/game_control.o(.data);
         . = ALIGN(4); src/save.o(.data);
         . = ALIGN(4); src/sio.o(.data);
+        . = ALIGN(4); src/report.o(.data);
         . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
@@ -100,6 +102,7 @@ SECTIONS
         . = ALIGN(4); src/oam.o(.bss);
         . = ALIGN(4); src/game_control.o(.bss);
         . = ALIGN(4); src/sio.o(.bss);
+        . = ALIGN(4); src/report.o(.bss);
 
         . = 0x000220;
         . = ALIGN(4); src/gbasram.o(.bss);

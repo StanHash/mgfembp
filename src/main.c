@@ -9,8 +9,7 @@
 #include "hardware.h"
 #include "interrupts.h"
 #include "proc.h"
-
-#include "unknowns.h"
+#include "save.h"
 
 char const g_build_date[] = "2002/06/06(THU) 18:18:02";
 char const g_build_name[] = "kaneko";

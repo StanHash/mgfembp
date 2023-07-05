@@ -7,8 +7,6 @@
 #include "oam.h"
 #include "sprite.h"
 
-#include "unknowns.h"
-
 #include <stdarg.h>
 
 #define BGCHR_DEBUGTEXT_DEFAULT 0x2C0

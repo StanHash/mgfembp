@@ -6,9 +6,8 @@
 #include "hardware.h"
 #include "oam.h"
 #include "proc.h"
+#include "report.h"
 #include "sprite.h"
-
-#include "unknowns.h"
 
 // this padding could also be from oam, ramfunc, proc, debug_text or sprite
 static u32 s_pad_0300002C;
@@ -22,7 +21,7 @@ struct ProcScr SHOULD_BE_CONST ProcScr_Program[] =
     PROC_NAME("GAMECTRL"),
     PROC_MARK(PROC_MARK_GAMECTRL),
     PROC_15,
-    PROC_CALL(func_common_02016A74),
+    PROC_CALL(StartFe6Report),
     PROC_SLEEP(0),
 PROC_LABEL(0),
     PROC_GOTO(0),

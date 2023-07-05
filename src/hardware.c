@@ -7,8 +7,6 @@
 #include "interrupts.h"
 #include "oam.h"
 
-#include "unknowns.h"
-
 static u8 s_bg_sync_bits;
 static bool s_pal_sync;
 

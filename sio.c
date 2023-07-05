@@ -3,15 +3,56 @@
 #include "async_upload.h"
 #include "gbaio.h"
 #include "gbasvc.h"
-#include "graphics_data.h"
 #include "hardware.h"
 #include "interrupts.h"
 #include "proc.h"
-#include "report.h"
 
 #if defined(VER_20030206)
 #include "debug_text.h"
 #endif
+
+// TODO: clean up structs
+
+struct SioSt
+{
+    /* 000 */ u8 unk_000;
+    /* 001 */ u8 unk_001;
+    /* 002 */ u16 last_sio_cnt;
+    /* 004 */ u16 unk_004;
+    /* 006 */ i8 self_id;
+    /* 007 */ u8 unk_007;
+    /* 008 */ u8 unk_008;
+    /* 009 */ u8 unk_009;
+    /* 00A */ u8 unk_00A;
+    /* 00B */ u8 unk_00B[4];
+    /* 00F */ u8 unk_00F;
+    /* 010 */ u8 unk_010;
+    /* 011 */ u8 unk_011;
+    /* 012 */ u16 unk_012[4];
+    /* 01A */ u8 unk_01A[4];
+    /* 01E */ u8 unk_01E;
+    /* 01F */ u8 unk_01F;
+    /* 020 */ u8 unk_020;
+    /* 021 */ u8 unk_021;
+    /* 022 */ u16 unk_022;
+    /* 024 */ u16 unk_024;
+    /* 026 */ u16 seq[4];
+    /* 02E */ u8 unk_02E;
+    /* 02F */ STRUCT_PAD(0x02F, 0x030); // implicit
+    /* 030 */ u16 unk_030;
+    /* 032 */ u16 buf[SIO_MAX_PACKET];
+    /* 132 */ STRUCT_PAD(0x132, 0x134); // implicit
+    /* 134 */ struct SioPending pending_send[8];
+    /* 594 */ struct SioPending pending_recv[4];
+    /* 7C4 */ u8 unk_7C4;
+    /* 7C5 */ u8 next_pending_send;
+    /* 7C6 */ u8 unk_7C6;
+    /* 7C7 */ u8 next_pending_recv;
+    /* 7C8 */ u16 unk_7C8;
+    /* 7CA */ u16 unk_7CA;
+    /* 7CC */ u16 unk_7CC;
+    /* 7CE */ u16 unk_7CE;
+};
 
 struct SioSt EWRAM_DATA gSioStInstance = { 0 };
 struct SioSt * SHOULD_BE_CONST gSioSt = &gSioStInstance;
@@ -79,7 +120,7 @@ int func_02014C94(void)
         case 1:
             siocnt = REG_SIOCNT;
 
-            if (gUnk_Sio_03001C34 != 0 && (siocnt & SIO_ERROR) == 0 && gSioSt->last_recv[1] != UINT16_MAX)
+            if (gUnk_Sio_03001C34 != 0 && (siocnt & SIO_ERROR) == 0 && gSioSt->unk_012[1] != UINT16_MAX)
             {
                 s_sio_id = (siocnt & SIO_ID) >> 4; // TODO: shift constant
                 gSioStateId = 2;
@@ -132,10 +173,10 @@ void func_02014DF4(void)
     gUnk_Sio_03001C30 = 0;
 
     gSioSt->unk_022 = 0;
-    gSioSt->self_seq = 0;
+    gSioSt->unk_024 = 0;
+    gSioSt->unk_7C4 = 0;
     gSioSt->next_pending_send = 0;
-    gSioSt->next_pending_write = 0;
-    gSioSt->next_pending_read = 0;
+    gSioSt->unk_7C6 = 0;
     gSioSt->next_pending_recv = 0;
     gSioSt->unk_01E = 0;
     gSioSt->unk_01F = 0;
@@ -144,9 +185,9 @@ void func_02014DF4(void)
 
     for (i = 0; i < 4; i++)
     {
-        gSioSt->player_status[i] = PLAYER_STATUS_0;
-        gSioSt->last_recv[i] = UINT16_MAX;
-        gSioSt->timeout_clock[i] = 0;
+        gSioSt->unk_00B[i] = PLAYER_STATUS_0;
+        gSioSt->unk_012[i] = UINT16_MAX;
+        gSioSt->unk_01A[i] = 0;
         gSioSt->seq[i] = 0;
     }
 
@@ -206,7 +247,7 @@ void func_02014F80(void)
     gSioSt->unk_004 = 0;
     gSioSt->self_id = -1;
     gSioSt->unk_007 = 0;
-    gSioSt->recv_flags = 0;
+    gSioSt->unk_008 = 0;
     gSioSt->unk_009 = 0;
     gSioSt->unk_00F = 0;
     gSioSt->unk_010 = 0;
@@ -276,7 +317,7 @@ void SioOnSerial(void)
     gUnk_Sio_03001C34 = 1;
     gSioSt->unk_01E = 0;
     gUnk_Sio_03001C30 = 1;
-    gSioSt->recv_flags = 0;
+    gSioSt->unk_008 = 0;
 
     REG_TM3CNT_H = 0;
 
@@ -297,27 +338,27 @@ void SioOnSerial(void)
     {
         if (recv[i] != 0 && recv[i] != 0xFFFF)
         {
-            if (gSioSt->player_status[i] == PLAYER_STATUS_0)
-                gSioSt->player_status[i] = PLAYER_STATUS_1;
+            if (gSioSt->unk_00B[i] == PLAYER_STATUS_0)
+                gSioSt->unk_00B[i] = PLAYER_STATUS_1;
 
-            gSioSt->recv_flags |= 1 << i;
+            gSioSt->unk_008 |= 1 << i;
         }
         else
         {
             if (func_common_0201592C(i) == TRUE)
             {
-                if (gSioSt->last_recv[i] == 0xFFFF)
+                if (gSioSt->unk_012[i] == 0xFFFF)
                 {
-                    gSioSt->timeout_clock[i]++;
+                    gSioSt->unk_01A[i]++;
                 }
                 else
                 {
-                    gSioSt->timeout_clock[i] = 0;
+                    gSioSt->unk_01A[i] = 0;
                 }
             }
         }
 
-        gSioSt->last_recv[i] = gSioIncoming[s_recv_cursor[i]][i] = recv[i];
+        gSioSt->unk_012[i] = gSioIncoming[s_recv_cursor[i]][i] = recv[i];
 
         s_recv_cursor[i] = (s_recv_cursor[i] + 1) & 0x1FF;
     }
@@ -433,7 +474,7 @@ void SioVSync_Loop(void)
                 case 3:
                     if (gSioSt->unk_01E > 60)
                     {
-                        gSioSt->player_status[gSioSt->self_id] = PLAYER_STATUS_0;
+                        gSioSt->unk_00B[gSioSt->self_id] = PLAYER_STATUS_0;
                         func_common_02015400();
                     }
 
@@ -442,7 +483,7 @@ void SioVSync_Loop(void)
                 case 2:
                     if (gSioSt->unk_001 != 0 && !func_common_0201596C())
                     {
-                        gSioSt->player_status[gSioSt->self_id] = PLAYER_STATUS_0;
+                        gSioSt->unk_00B[gSioSt->self_id] = PLAYER_STATUS_0;
                         func_common_02015400();
                     }
 
@@ -451,9 +492,9 @@ void SioVSync_Loop(void)
                 case 1:
                     for (i = 0; i < 4; i++)
                     {
-                        if (gSioSt->timeout_clock[i] > 60)
+                        if (gSioSt->unk_01A[i] > 60)
                         {
-                            gSioSt->player_status[i] = PLAYER_STATUS_0;
+                            gSioSt->unk_00B[i] = PLAYER_STATUS_0;
                             func_common_02015400();
                         }
                     }
@@ -540,7 +581,7 @@ void SioMain_Loop(void)
 
     for (i = 0; i < 4; i++)
     {
-        fu16 len;
+        fu16 var;
 
 #if defined(VER_20030206)
         DebugPutObjNumber((i * 5 + 7) * 8, 0x70, gUnk_Sio_06_03001C30[i], 4);
@@ -548,11 +589,11 @@ void SioMain_Loop(void)
 #endif
 
     redo:
-        len = func_common_02015B34(i, gSioSt->buf);
+        var = func_common_02015B34(i, gSioSt->buf);
 
-        if (len != 0)
+        if (var != 0)
         {
-            switch (len)
+            switch (var)
             {
                 struct SioMessage * message;
                 struct SioData * data_message;
@@ -639,31 +680,30 @@ void SioMain_Loop(void)
                             {
                                 if ((message->sender >> 4) != gSioSt->self_id &&
                                     (message->sender & 0x0F) == gSioSt->self_id &&
-                                    (message->param == (u16)(gSioSt->self_seq + 1)))
+                                    (message->param == (u16)(gSioSt->unk_024 + 1)))
                                 {
                                     gSioSt->unk_00F |= 1 << (message->sender >> 4);
                                     s_unk_03000040->unk_00 = gSioSt->unk_00F;
 
                                     if ((gSioSt->unk_00F & gSioSt->unk_009) == gSioSt->unk_009)
                                     {
-                                        gSioSt->self_seq++;
-                                        gSioSt->pending_send[gSioSt->next_pending_send].packet.head.kind = 0;
-                                        gSioSt->next_pending_send++;
-                                        gSioSt->next_pending_send &= 7;
+                                        gSioSt->unk_024++;
+                                        gSioSt->pending_send[gSioSt->unk_7C4].packet.head.kind = 0;
+                                        gSioSt->unk_7C4++;
+                                        gSioSt->unk_7C4 &= 7;
                                         gSioSt->unk_02E = 0;
                                         gSioSt->unk_010 = gSioSt->unk_011 = gSioSt->unk_00F = 0;
                                     }
                                 }
                             }
-
                             break;
 
                         case SIO_MSG_C7:
                             if (func_common_0201592C(message->param) == 0)
                             {
-                                gSioSt->player_status[gSioSt->self_id] = PLAYER_STATUS_2;
-                                gSioSt->player_status[(gSioSt->last_sio_cnt & 0x30) >> 4] = PLAYER_STATUS_2;
-                                gSioSt->player_status[message->param] = PLAYER_STATUS_2;
+                                gSioSt->unk_00B[gSioSt->self_id] = PLAYER_STATUS_2;
+                                gSioSt->unk_00B[(gSioSt->last_sio_cnt & 0x30) >> 4] = PLAYER_STATUS_2;
+                                gSioSt->unk_00B[message->param] = PLAYER_STATUS_2;
                                 gSioSt->unk_004 = 6;
                             }
 
@@ -672,16 +712,16 @@ void SioMain_Loop(void)
                         case SIO_MSG_C5:
                             if (func_common_0201592C(message->param) == 0)
                             {
-                                gSioSt->player_status[message->param] = PLAYER_STATUS_2;
+                                gSioSt->unk_00B[message->param] = PLAYER_STATUS_2;
                                 gSioSt->unk_004 = 6;
                             }
 
                             break;
 
                         case SIO_MSG_C6:
-                            gSioSt->player_status[message->param] = PLAYER_STATUS_5;
+                            gSioSt->unk_00B[message->param] = PLAYER_STATUS_5;
                             gSioSt->unk_009 |= 1 << message->param;
-                            gSioSt->timeout_clock[message->param] = 0;
+                            gSioSt->unk_01A[message->param] = 0;
                             break;
 
                         case SIO_MSG_C4:
@@ -739,7 +779,7 @@ bool func_common_0201592C(fu8 player_id)
 
 bool func_common_0201594C(fu8 player_id)
 {
-    if (((gSioSt->recv_flags >> player_id) & 1) != 0)
+    if (((gSioSt->unk_008 >> player_id) & 1) != 0)
         return TRUE;
 
     return FALSE;
@@ -767,13 +807,13 @@ bool func_common_0201596C(void)
 
 int func_common_020159C0(void)
 {
-    if (gSioSt->next_pending_write >= gSioSt->next_pending_send)
+    if (gSioSt->next_pending_send >= gSioSt->unk_7C4)
     {
-        return gSioSt->next_pending_write - gSioSt->next_pending_send;
+        return gSioSt->next_pending_send - gSioSt->unk_7C4;
     }
     else
     {
-        return 8 + gSioSt->next_pending_write - gSioSt->next_pending_send;
+        return 8 + gSioSt->next_pending_send - gSioSt->unk_7C4;
     }
 }
 
@@ -783,7 +823,7 @@ bool func_common_020159F0(void)
 
     for (i = 0; i < 4; i++)
     {
-        if (gSioSt->player_status[i] == PLAYER_STATUS_5)
+        if (gSioSt->unk_00B[i] == PLAYER_STATUS_5)
             count++;
     }
 
@@ -1079,13 +1119,13 @@ struct SioData * func_common_02015E28(u32 * out)
 {
     // TODO: clean up
 
-    if (gSioSt->pending_send[gSioSt->next_pending_send].packet.head.kind != SIO_MSG_DATA)
+    if (gSioSt->pending_send[gSioSt->unk_7C4].packet.head.kind != SIO_MSG_DATA)
         return NULL;
 
-    s_unk_03000040 = &gSioSt->pending_send[gSioSt->next_pending_send];
+    s_unk_03000040 = &gSioSt->pending_send[gSioSt->unk_7C4];
 
-    *out = gSioSt->pending_send[gSioSt->next_pending_send].packet.len;
-    return &gSioSt->pending_send[gSioSt->next_pending_send].packet;
+    *out = gSioSt->pending_send[gSioSt->unk_7C4].packet.len;
+    return &gSioSt->pending_send[gSioSt->unk_7C4].packet;
 }
 
 int SioEmitData(u8 const * src, fu16 len)
@@ -1099,8 +1139,8 @@ int SioEmitData(u8 const * src, fu16 len)
 
     s_unk_03000044 = 1;
 
-    gSioSt->pending_send[gSioSt->next_pending_write].unk_00 = 0;
-    dat = &gSioSt->pending_send[gSioSt->next_pending_write].packet;
+    gSioSt->pending_send[gSioSt->next_pending_send].unk_00 = 0;
+    dat = &gSioSt->pending_send[gSioSt->next_pending_send].packet;
 
     dat->head.kind = SIO_MSG_DATA;
     dat->head.sender = gSioSt->self_id;
@@ -1114,10 +1154,10 @@ int SioEmitData(u8 const * src, fu16 len)
         dat->bytes[i] = src[i];
     }
 
-    result = gSioSt->next_pending_write;
+    result = gSioSt->next_pending_send;
 
-    gSioSt->next_pending_write += 1;
-    gSioSt->next_pending_write &= 7;
+    gSioSt->next_pending_send += 1;
+    gSioSt->next_pending_send &= 7;
 
     s_unk_03000044 = 0;
 
@@ -1129,7 +1169,7 @@ int SioReceiveData(void * dst, u8 * out_sender_id, bool (*verify)(void *))
     fu8 i;
     fu8 sender_id;
 
-    struct SioData * dat = &gSioSt->pending_recv[gSioSt->next_pending_read].packet;
+    struct SioData * dat = &gSioSt->pending_recv[gSioSt->unk_7C6].packet;
 
     if (dat->head.kind != SIO_MSG_DATA || dat->head.sender == gSioSt->self_id)
         return 0;
@@ -1144,8 +1184,8 @@ int SioReceiveData(void * dst, u8 * out_sender_id, bool (*verify)(void *))
 
         dat->head.kind = 0;
 
-        gSioSt->next_pending_read += 1;
-        gSioSt->next_pending_read &= 3;
+        gSioSt->unk_7C6 += 1;
+        gSioSt->unk_7C6 &= 3;
 
         // recursion!
         return SioReceiveData(dst, out_sender_id, verify);
@@ -1167,8 +1207,8 @@ int SioReceiveData(void * dst, u8 * out_sender_id, bool (*verify)(void *))
 
             dat->head.kind = 0;
 
-            gSioSt->next_pending_read += 1;
-            gSioSt->next_pending_read &= 3;
+            gSioSt->unk_7C6 += 1;
+            gSioSt->unk_7C6 &= 3;
 
             // recursion!
             return SioReceiveData(dst, out_sender_id, verify);
@@ -1181,8 +1221,8 @@ int SioReceiveData(void * dst, u8 * out_sender_id, bool (*verify)(void *))
 
             gSioSt->seq[dat->head.sender] += 1;
 
-            gSioSt->next_pending_read += 1;
-            gSioSt->next_pending_read &= 3;
+            gSioSt->unk_7C6 += 1;
+            gSioSt->unk_7C6 &= 3;
 
             *out_sender_id = sender_id;
 
@@ -1330,7 +1370,7 @@ void func_common_0201629C(struct SioBigSendProc * proc)
     int i;
     u8 data[4];
 
-    gSioSt->self_seq = gSioSt->unk_022 = gSioSt->unk_02E = 0;
+    gSioSt->unk_024 = gSioSt->unk_022 = gSioSt->unk_02E = 0;
 
     gSioSt->seq[0] = gSioSt->seq[1] = gSioSt->seq[2] = gSioSt->seq[3] = 0;
 
@@ -1352,7 +1392,7 @@ void func_common_020162FC(struct SioBigSendProc * proc)
 
     if (gSioSt->unk_02E == 0)
     {
-        if (proc->current_block != gSioSt->self_seq - 1)
+        if (proc->current_block != gSioSt->unk_024 - 1)
         {
             proc->data += SIO_MAX_DATA;
             proc->completion_percent = proc->current_block * 100 / proc->block_count;
@@ -1371,7 +1411,7 @@ void func_common_020162FC(struct SioBigSendProc * proc)
 
 void func_common_0201636C(struct SioBigReceiveProc * proc)
 {
-    gSioSt->self_seq = gSioSt->unk_022 = gSioSt->unk_02E = 0;
+    gSioSt->unk_024 = gSioSt->unk_022 = gSioSt->unk_02E = 0;
 
     gSioSt->seq[0] = gSioSt->seq[1] = gSioSt->seq[2] = gSioSt->seq[3] = 0;
 

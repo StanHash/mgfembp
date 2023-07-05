@@ -99,8 +99,8 @@ struct Unit
     /* 0A */ u8 ai_flags;
     /* 0B */ i8 id;
     /* 0C */ u16 flags;
-    /* 0E */ i8 x;
-    /* 0F */ i8 y;
+    /* 0E */ i8 pid; // was x
+    /* 0F */ i8 jid; // was y
     /* 10 */ i8 max_hp;
     /* 11 */ i8 hp;
     /* 12 */ i8 pow;
