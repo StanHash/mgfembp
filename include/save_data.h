@@ -1,7 +1,7 @@
 #ifndef SAVE_DATA_H
 #define SAVE_DATA_H
 
-#include "common.h"
+#include "prelude.h"
 
 #include "game_structs.h"
 #include "save_fwd.h"

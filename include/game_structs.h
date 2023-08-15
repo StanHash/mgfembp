@@ -1,7 +1,7 @@
 #ifndef GAME_STRUCTS_H
 #define GAME_STRUCTS_H
 
-#include "common.h"
+#include "prelude.h"
 
 #define SUPPLY_ITEM_COUNT 100
 

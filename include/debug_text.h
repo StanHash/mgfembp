@@ -1,7 +1,7 @@
 #ifndef DEBUG_TEXT_H
 #define DEBUG_TEXT_H
 
-#include "common.h"
+#include "prelude.h"
 
 void DebugInitBg(int bg, int vram_offset);
 void DebugPutStr(u16 * tm, char const * str);

@@ -1,6 +1,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#if defined(MODERN)
+#undef MODERN
+#define MODERN 1
+#endif
+
 #include "attributes.h"
 #include "types.h"
 

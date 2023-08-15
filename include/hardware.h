@@ -1,7 +1,7 @@
 #ifndef HARDWARE_H
 #define HARDWARE_H
 
-#include "common.h"
+#include "prelude.h"
 #include "vec2.h"
 
 // TODO: move to gbasomething

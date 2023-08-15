@@ -1,4 +1,4 @@
-#include "common.h"
+#include "prelude.h"
 
 #include "gbadma.h"
 #include "gbaio.h"

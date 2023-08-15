@@ -5,7 +5,7 @@
 // the actual uploading would happen on VBlank, in order to prevent atrifacts that would occur when doing do
 // mid-display.
 
-#include "common.h"
+#include "prelude.h"
 
 void ClearAsyncUploadList(void);
 void AsyncDataUpload(void const * src, void * dst, int size);

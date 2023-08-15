@@ -1,7 +1,7 @@
 #ifndef OAM_H
 #define OAM_H
 
-#include "common.h"
+#include "prelude.h"
 
 // TODO: move to gbasomething.h
 #define OAM (void *)0x07000000

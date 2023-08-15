@@ -1,7 +1,7 @@
 #ifndef VEC2_H
 #define VEC2_H
 
-#include "common.h"
+#include "prelude.h"
 
 // idk where else to put this
 

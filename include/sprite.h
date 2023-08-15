@@ -1,7 +1,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "common.h"
+#include "prelude.h"
 
 #include "proc.h"
 
@@ -13,18 +13,17 @@ struct SpriteProc
     /* 30 */ i32 y;
     /* 34 */ STRUCT_PAD(0x34, 0x50);
     /* 50 */ i16 layer;
-    /* 52 */ u16 tileref;
+    /* 52 */ u16 oam2;
     /* 54 */ u16 const * sprite;
 };
 
 void PutSpriteAffine(int id, fi16 pa, fi16 pb, fi16 pc, fi16 pd);
 void ClearSprites(void);
 void PutSprite(int layer, int x, int y, u16 const * sprite, int oam2);
-void PutSpriteExt(int layer, int xOam1, int yOam0, u16 const * sprite, int oam2);
-void PushSpriteLayerObjects(int layer);
+void PutSpriteExt(int layer, int x_oam1, int y_oam0, u16 const * sprite, int oam2);
 void PutSpriteLayerOam(int layer);
 
-struct SpriteProc * StartSpriteRefresher(AnyProc * parent, int layer, int x, int y, u16 const * sprite, int tileref);
+struct SpriteProc * StartSpriteRefresher(AnyProc * parent, int layer, int x, int y, u16 const * sprite, int oam2);
 void MoveSpriteRefresher(struct SpriteProc * proc, int x, int y);
 
 extern u16 SHOULD_BE_CONST Sprite_8x8[];

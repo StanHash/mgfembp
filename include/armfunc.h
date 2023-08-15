@@ -1,7 +1,7 @@
 #ifndef ARMFUNC_H
 #define ARMFUNC_H
 
-#include "common.h"
+#include "prelude.h"
 
 extern u8 const ArmCodeStart[];
 extern u8 const ArmCodeEnd[];
@@ -10,9 +10,9 @@ extern u8 const ArmCodeEnd[];
 void ColorFadeTick(void);
 void ClearOam(void * oam, int count);
 u32 Checksum32(void const * buf, int size);
-void TmApplyTsa(u16 * tm, u8 const * tsa, u16 tileref);
+void TmApplyTsa(u16 * tm, u8 const * tsa, u16 tile_base);
 void TmCopyRect(u16 const * src, u16 * dst, int width, int height);
-void TmFillRect(u16 * tm, int width, int height, u16 tileref);
+void TmFillRect(u16 * tm, int width, int height, u16 tile_base);
 // void DrawGlyph(u16 const * cvt_lut, void * chr, u32 const * glyph, int offset);
 // void DecodeString(char const * src, char * dst);
 void PutOamHi(int x, int y, u16 const * oam_list, int oam2);
@@ -33,9 +33,9 @@ void MapFloodCoreRam(void);
 // void ColorFadeTick_thm(void);
 void ClearOam_thm(void * oam, int count);
 u32 Checksum32_thm(void const * buf, int size);
-// void TmApplyTsa_thm(u16 * tm, u8 const * tsa, u16 tileref);
+// void TmApplyTsa_thm(u16 * tm, u8 const * tsa, u16 tile_base);
 // void TmCopyRect_thm(u16 const * src, u16 * dst, int width, int height);
-// void TmFillRect_thm(u16 * tm, int width, int height, u16 tileref);
+// void TmFillRect_thm(u16 * tm, int width, int height, u16 tile_base);
 
 // helper macros
 // #define ColorFadeTick ColorFadeTick_thm

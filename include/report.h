@@ -1,7 +1,7 @@
 #ifndef REPORT_H
 #define REPORT_H
 
-#include "common.h"
+#include "prelude.h"
 
 #include "game_structs.h"
 #include "proc.h"
@@ -42,7 +42,7 @@ void func_common_02016A24(struct ReportProc * proc);
 
 extern struct Unit gUnits[62];
 
-extern struct Unit * SHOULD_BE_CONST gUnitLut[0x40];
+extern struct Unit * SHOULD_BE_CONST UnitTable[0x40];
 
 extern struct ProcScr SHOULD_BE_CONST ProcScr_Fe6Report[];
 

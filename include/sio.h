@@ -1,7 +1,7 @@
 #ifndef SIO_H
 #define SIO_H
 
-#include "common.h"
+#include "prelude.h"
 
 #include "proc.h"
 

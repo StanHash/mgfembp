@@ -1,7 +1,7 @@
 #ifndef GBASRAM_H
 #define GBASRAM_H
 
-#include "common.h"
+#include "prelude.h"
 
 void SetSramFastFunc(void);
 void WriteSramFast(u8 const * src, u8 * dst, u32 size);

@@ -46,7 +46,7 @@ static struct PidReport s_unk_03000080;
 #define ROM_GAMECODE (*(u32 const *)0x080000AC)
 #define ROM_GAMECODE_FE6 0x4A454641u // 'AFEJ'
 
-struct Unit * SHOULD_BE_CONST gUnitLut[0x40] = {
+struct Unit * SHOULD_BE_CONST UnitTable[0x40] = {
     [0x00] = NULL,        [0x01] = gUnits + 0,  [0x02] = gUnits + 1,  [0x03] = gUnits + 2,  [0x04] = gUnits + 3,
     [0x05] = gUnits + 4,  [0x06] = gUnits + 5,  [0x07] = gUnits + 6,  [0x08] = gUnits + 7,  [0x09] = gUnits + 8,
     [0x0A] = gUnits + 9,  [0x0B] = gUnits + 10, [0x0C] = gUnits + 11, [0x0D] = gUnits + 12, [0x0E] = gUnits + 13,
@@ -64,7 +64,7 @@ struct Unit * SHOULD_BE_CONST gUnitLut[0x40] = {
 
 inline struct Unit * GetUnit(int unit_id)
 {
-    return gUnitLut[unit_id & 0xFF];
+    return UnitTable[unit_id & 0xFF];
 }
 
 void ClearUnit(struct Unit * unit)

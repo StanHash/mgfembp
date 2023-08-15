@@ -108,15 +108,15 @@ SECTIONS
         . = ALIGN(4); src/gbasram.o(.bss);
     } > IWRAM
 
-    .ewram_data (NOLOAD) : ALIGN(4)
+    ewram_data (NOLOAD) : ALIGN(4)
     {
-        . = ALIGN(4); src/hardware.o(.ewram_data);
-        . = ALIGN(4); src/async_upload.o(.ewram_data);
-        . = ALIGN(4); src/proc.o(.ewram_data);
-        . = ALIGN(4); src/debug_text.o(.ewram_data);
-        . = ALIGN(4); src/sprite.o(.ewram_data);
-        . = ALIGN(4); src/save.o(.ewram_data);
-        . = ALIGN(4); src/sio.o(.ewram_data);
+        . = ALIGN(4); src/hardware.o(ewram_data);
+        . = ALIGN(4); src/async_upload.o(ewram_data);
+        . = ALIGN(4); src/proc.o(ewram_data);
+        . = ALIGN(4); src/debug_text.o(ewram_data);
+        . = ALIGN(4); src/sprite.o(ewram_data);
+        . = ALIGN(4); src/save.o(ewram_data);
+        . = ALIGN(4); src/sio.o(ewram_data);
     } > EWRAM
 
     /* DWARF 2 sections */

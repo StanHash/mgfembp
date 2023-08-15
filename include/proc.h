@@ -1,7 +1,7 @@
 #ifndef PROC_H
 #define PROC_H
 
-#include "common.h"
+#include "prelude.h"
 
 // magical proc types
 typedef void AnyProc;
