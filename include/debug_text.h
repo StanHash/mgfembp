@@ -24,7 +24,7 @@ void DebugPutObjStr(int x, int y, char const * str);
 void DebugPutObjNumber(int x, int y, int number, int length);
 void DebugPutObjNumberHex(int x, int y, int number, int length);
 
-extern u8 SHOULD_BE_CONST Img_DebugFont[];
+extern u32 SHOULD_BE_CONST Img_DebugFont[];
 
 // 8 characters + '\0'. least significant digit always at + 7
 extern char EWRAM_DATA gNumberStr[9];
