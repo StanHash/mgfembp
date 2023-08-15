@@ -1,4 +1,4 @@
-    .include "asm/head.inc"
+    .syntax unified
 
     .section "fake_glue", "ax"
 

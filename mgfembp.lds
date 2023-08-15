@@ -27,7 +27,6 @@ SECTIONS
         . = ALIGN(4); src/save.o(.text);
         . = ALIGN(4); src/sio.o(.text);
         . = ALIGN(4); src/report.o(.text);
-        . = ALIGN(4); asm/*.o(.text);
         . = ALIGN(4); src/gbasvc.o(.text);
         . = ALIGN(4); src/gbasram.o(.text);
         . = ALIGN(4); *libgcc.a:_call_via_rX.o(.text);
@@ -37,7 +36,7 @@ SECTIONS
         . = ALIGN(4); *libgcc.a:_udivsi3.o(.text);
         . = ALIGN(4); *libgcc.a:_umodsi3.o(.text);
         . = ALIGN(4); *libc.a:memcpy.o(.text);
-        . = ALIGN(4); asm/*.o(fake_glue);
+        . = ALIGN(4); src/*.o(fake_glue);
     } > LOADRAM
 
     .rodata : ALIGN(4)
@@ -53,10 +52,9 @@ SECTIONS
         . = ALIGN(4); src/sprite.o(.rodata);
         . = ALIGN(4); src/game_control.o(.rodata);
         . = ALIGN(4); src/save.o(.rodata);
-        . = ALIGN(4); asm/*.o(.rodata);
+        . = ALIGN(4); src/graphics_data.o(.rodata);
         . = ALIGN(4); src/sio.o(.rodata);
         . = ALIGN(4); src/report.o(.rodata);
-        . = ALIGN(4); asm/*.o(.rodata_2);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
 
@@ -70,7 +68,6 @@ SECTIONS
         . = ALIGN(4); src/save.o(.data);
         . = ALIGN(4); src/sio.o(.data);
         . = ALIGN(4); src/report.o(.data);
-        . = ALIGN(4); asm/*.o(.data);
     } > LOADRAM
 
     .bss (NOLOAD) : ALIGN(4)

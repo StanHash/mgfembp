@@ -9,6 +9,7 @@ BUILD_NAMES := mgfembp mgfembp_20030206 mgfembp_20030219
 SRC_DIR = src
 ASM_DIR = asm
 BUILD_DIR = build
+EMBED_DIR = embed
 
 LDS = mgfembp.lds
 
@@ -95,9 +96,13 @@ compare: $(BINS)
 clean:
 	@echo "RM $(BINS) $(ELFS) $(MAPS) $(BUILD_DIR)/"
 	@rm -f $(BINS) $(ELFS) $(MAPS)
-	@rm -fr $(BUILD_DIR)/
+	@rm -fr $(BUILD_DIR)/ $(EMBED_DIR)/
 
-.PHONY: compare clean
+tools:
+	$(MAKE) -C tools/embed
+	$(MAKE) -C tools/gbagfx
+
+.PHONY: compare clean tools
 
 %.bin: %.elf
 	$(OBJCOPY) --strip-debug -O binary $< $@
@@ -133,6 +138,40 @@ endef
 
 $(foreach build, $(BUILD_NAMES), $(eval $(call rules,$(build))))
 
+# embed data
+
+$(EMBED_DIR)/%.u8: $(EMBED_DIR)/%
+	@mkdir -p $(dir $@)
+	tools/embed/embed u8 $< > $@
+
+$(EMBED_DIR)/%.u16: $(EMBED_DIR)/%
+	@mkdir -p $(dir $@)
+	tools/embed/embed u16 $< > $@
+
+$(EMBED_DIR)/%.u32: $(EMBED_DIR)/%
+	@mkdir -p $(dir $@)
+	tools/embed/embed u32 $< > $@
+
+# copy
+$(EMBED_DIR)/%: data/%
+	@mkdir -p $(dir $@)
+	cp $< $@
+
+# compress
+$(EMBED_DIR)/%.lz: $(EMBED_DIR)/%
+	@mkdir -p $(dir $@)
+	tools/gbagfx/gbagfx $< $@
+
+# png -> 4bpp
+$(EMBED_DIR)/%.4bpp: data/%.png
+	@mkdir -p $(dir $@)
+	tools/gbagfx/gbagfx $< $@
+
+# png -> gbapal
+$(EMBED_DIR)/%.gbapal: data/%.png
+	@mkdir -p $(dir $@)
+	tools/gbagfx/gbagfx $< $@
+
 ifneq (clean,$(MAKECMDGOALS))
   -include $(ALL_DEPS)
   .PRECIOUS: $(BUILD_DIR)/%.d
@@ -145,6 +184,10 @@ endif
 $(BUILD_DIR)/mgfembp_20030206/%.o: CPPFLAGS += -DVER_20030206
 $(BUILD_DIR)/mgfembp_20030219/%.o: CPPFLAGS += -DVER_20030219
 $(BUILD_DIR)/mgfembp/%.o:          CPPFLAGS += -DVER_FINAL
+
+$(BUILD_DIR)/mgfembp_20030206/%.d: CPPFLAGS += -DVER_20030206
+$(BUILD_DIR)/mgfembp_20030219/%.d: CPPFLAGS += -DVER_20030219
+$(BUILD_DIR)/mgfembp/%.d:          CPPFLAGS += -DVER_FINAL
 
 # not yet supported by agbcc :/
 # %/main.o:            CFLAGS += -mtpcs-frame
