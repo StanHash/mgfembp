@@ -90,17 +90,14 @@ $(shell mkdir -p $(SUBDIRS))
 # ===========
 
 compare: $(BINS)
-	$(SHASUM) -c mgfembp_all.sha1
+	$(SHASUM) -c mgfembp.sha1
 
 clean:
 	@echo "RM $(BINS) $(ELFS) $(MAPS) $(BUILD_DIR)/"
 	@rm -f $(BINS) $(ELFS) $(MAPS)
 	@rm -fr $(BUILD_DIR)/
 
-one: mgfembp.bin
-	$(SHASUM) -c mgfembp.sha1
-
-.PHONY: compare clean one
+.PHONY: compare clean
 
 %.bin: %.elf
 	$(OBJCOPY) --strip-debug -O binary $< $@
