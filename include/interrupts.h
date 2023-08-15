@@ -1,6 +1,8 @@
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H
 
+#include "prelude.h"
+
 enum
 {
     // Note: those do NOT map directly to IE/IF bits, but rather to the order in which IntrMain processes them

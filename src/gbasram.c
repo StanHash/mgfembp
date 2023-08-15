@@ -6,8 +6,8 @@ char const gSramIdentifier[] = "SRAM_F_V102";
 static u16 VerifySramFastRamArea[80];
 static u16 ReadSramFastRamArea[64];
 
-extern u32 (*COMMON_DATA(VerifySramFast) VerifySramFast)(void const * src, void * dst, u32 size);
-extern void (*COMMON_DATA(ReadSramFast) ReadSramFast)(void const * src, void * dst, u32 size);
+u32 (*COMMON_DATA(VerifySramFast) VerifySramFast)(void const * src, void * dst, u32 size) = NULL;
+void (*COMMON_DATA(ReadSramFast) ReadSramFast)(void const * src, void * dst, u32 size) = NULL;
 
 void ReadSramFast_Core(u8 const * src, u8 * dst, u32 size)
 {

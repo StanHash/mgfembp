@@ -32,15 +32,17 @@ static u16 s_write_cursor;
 static u16 s_read_cursor[4];
 static u16 s_recv_cursor[4];
 
-// COMMON
-extern int gUnk_Sio_03001C34;
-extern int gSioStateId;
-extern u32 gUnk_Sio_03001C30;
-extern u8 gUnk_Sio_03002E50[SIO_MAX_PACKET]; // unused?
-extern u16 gUnk_Sio_06_03001C30[4];
-extern u16 gUnk_Sio_06_03001CC8[4];
-extern u16 gUnk_Sio_06_03002E58[4];
-extern struct SioMessage gSioMsgBuf;
+#if defined(VER_20030206)
+u16 COMMON_DATA(gUnk_Sio_06_03001C30) gUnk_Sio_06_03001C30[4] = { 0 };
+u16 COMMON_DATA(gUnk_Sio_06_03001CC8) gUnk_Sio_06_03001CC8[4] = { 0 };
+u16 COMMON_DATA(gUnk_Sio_06_03002E58) gUnk_Sio_06_03002E58[4] = { 0 };
+#endif
+
+u32 COMMON_DATA(gUnk_Sio_03001C30) gUnk_Sio_03001C30 = 0;
+u32 COMMON_DATA(gUnk_Sio_03001C34) gUnk_Sio_03001C34 = 0;
+int COMMON_DATA(gSioStateId) gSioStateId = 0;
+struct SioMessage COMMON_DATA(gSioMsgBuf) gSioMsgBuf = { 0 };
+u8 COMMON_DATA(gUnk_Sio_03002E50) gUnk_Sio_03002E50[SIO_MAX_PACKET] = { 0 }; // unused?
 
 // TODO: what to do here? This is improvable
 struct Sio

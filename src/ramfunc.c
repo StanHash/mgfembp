@@ -9,10 +9,10 @@
 #undef MapFloodCoreStep
 #undef MapFloodCore
 
-extern u8 COMMON_DATA(RamFuncArea) RamFuncArea[];
+u8 COMMON_DATA(RamFuncArea) RamFuncArea[0xA00] = { 0 };
 
-extern void (*COMMON_DATA(PutOamHiRamFunc) PutOamHiRamFunc)(int x, int y, u16 const * oam_list, int oam2);
-extern void (*COMMON_DATA(PutOamHiRamFunc) PutOamLoRamFunc)(int x, int y, u16 const * oam_list, int oam2);
+void (*COMMON_DATA(PutOamHiRamFunc) PutOamHiRamFunc)(int x, int y, u16 const * oam_list, int oam2) = NULL;
+void (*COMMON_DATA(PutOamLoRamFunc) PutOamLoRamFunc)(int x, int y, u16 const * oam_list, int oam2) = NULL;
 
 void InitRamFuncs(void)
 {

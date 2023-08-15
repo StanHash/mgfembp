@@ -8,31 +8,6 @@ MEMORY
     IWRAM (w!x)  : ORIGIN = 0x03000000, LENGTH = 32K
 }
 
-/* COMMON */
-gOamLoPutIt = 0x03000340;
-gDispIo = 0x03000350;
-gIrqFuncTable = 0x030003C0;
-gOamAffinePutId = 0x030003F4;
-PutOamHiRamFunc = 0x030003F8;
-HBlankFuncA = 0x030003FC;
-gOam = 0x03000400;
-gOamHiPutIt = 0x03000A00;
-HBlankFuncB = 0x03000A04;
-RamFuncArea = 0x03000A10;
-PutOamLoRamFunc = 0x03001410;
-gOamAffinePutIt = 0x03001414;
-IntrMainRam = 0x03001420; /* size: 0800 */
-gSpriteAllocIt = 0x03001C20;
-gUnk_Sio_03001C30 = 0x03001C30;
-gUnk_Sio_03001C34 = 0x03001C34;
-gUnk_03001C40 = 0x03001C40;
-gSioStateId = 0x03001CC8;
-gUnits = 0x03001CD0;
-gSioMsgBuf = 0x03002E40;
-gUnk_Sio_03002E50 = 0x03002E50;
-ReadSramFast = 0x03002ED0;
-VerifySramFast = 0x03002ED4;
-
 SECTIONS
 {
     .text : ALIGN(4)
@@ -62,7 +37,7 @@ SECTIONS
         . = ALIGN(4); *libgcc.a:_udivsi3.o(.text);
         . = ALIGN(4); *libgcc.a:_umodsi3.o(.text);
         . = ALIGN(4); *libc.a:memcpy.o(.text);
-        . = ALIGN(4); asm/*.o(.fake_glue);
+        . = ALIGN(4); asm/*.o(fake_glue);
     } > LOADRAM
 
     .rodata : ALIGN(4)
@@ -80,6 +55,8 @@ SECTIONS
         . = ALIGN(4); src/save.o(.rodata);
         . = ALIGN(4); asm/*.o(.rodata);
         . = ALIGN(4); src/sio.o(.rodata);
+        . = ALIGN(4); src/report.o(.rodata);
+        . = ALIGN(4); asm/*.o(.rodata_2);
         . = ALIGN(4); src/gbasram.o(.rodata);
     } > LOADRAM
 
@@ -103,9 +80,48 @@ SECTIONS
         . = ALIGN(4); src/game_control.o(.bss);
         . = ALIGN(4); src/sio.o(.bss);
         . = ALIGN(4); src/report.o(.bss);
-
-        . = 0x000220;
+        . = ALIGN(4); . = . + 0x17C; /* empty? */
         . = ALIGN(4); src/gbasram.o(.bss);
+    } > IWRAM
+
+    COMMON (NOLOAD) : ALIGN(4)
+    {
+        . = ALIGN(4); *(COMMON.gOamLoPutIt);
+        . = ALIGN(4); . = . + 12; /* empty? */
+        . = ALIGN(4); *(COMMON.gDispIo);
+        . = ALIGN(4); . = . + 4; /* empty? */
+        . = ALIGN(4); *(COMMON.gIrqFuncTable);
+        . = ALIGN(4); *(COMMON.gOamAffinePutId);
+        . = ALIGN(4); *(COMMON.PutOamHiRamFunc);
+        . = ALIGN(4); *(COMMON.HBlankFuncA);
+        . = ALIGN(4); *(COMMON.gOam);
+        . = ALIGN(4); . = . + 0x200; /* empty? */
+        . = ALIGN(4); *(COMMON.gOamHiPutIt);
+        . = ALIGN(4); *(COMMON.HBlankFuncB);
+        . = ALIGN(4); . = . + 8; /* empty? */
+        . = ALIGN(4); *(COMMON.RamFuncArea);
+        . = ALIGN(4); *(COMMON.PutOamLoRamFunc);
+        . = ALIGN(4); *(COMMON.gOamAffinePutIt);
+        . = ALIGN(4); . = . + 8; /* empty? */
+        . = ALIGN(4); *(COMMON.IntrMainRam);
+        . = ALIGN(4); *(COMMON.gSpriteAllocIt);
+        . = ALIGN(4); . = . + 12; /* empty? */
+        . = ALIGN(4); *(COMMON.gUnk_Sio_06_03001C30);
+        . = ALIGN(4); *(COMMON.gUnk_Sio_03001C30);
+        . = ALIGN(4); *(COMMON.gUnk_Sio_03001C34);
+        . = ALIGN(0x10); /* align? */
+        . = ALIGN(4); *(COMMON.gUnk_03001C40);
+        . = ALIGN(4); *(COMMON.gUnk_Sio_06_03001CC8);
+        . = ALIGN(4); *(COMMON.gSioStateId);
+        . = ALIGN(0x10); /* align? */
+        . = ALIGN(4); *(COMMON.gUnits);
+        . = ALIGN(4); *(COMMON.gSioMsgBuf);
+        . = ALIGN(4); . = . + 4; /* empty? */
+        . = ALIGN(4); *(COMMON.gUnk_Sio_06_03002E58);
+        . = ALIGN(0x10); /* align? */
+        . = ALIGN(4); *(COMMON.gUnk_Sio_03002E50);
+        . = ALIGN(4); *(COMMON.ReadSramFast);
+        . = ALIGN(4); *(COMMON.VerifySramFast);
     } > IWRAM
 
     ewram_data (NOLOAD) : ALIGN(4)

@@ -28,9 +28,9 @@ void (*EWRAM_DATA MainFunc)(void) = NULL;
 u32 EWRAM_DATA gPad_0202CA34 = 0; // this is to pad for matching
 struct KeySt EWRAM_DATA gKeyStInstance = { 0 };
 
-extern struct DispIo COMMON_DATA(gDispIo) gDispIo;
-extern void (*COMMON_DATA(HBlankFuncA) HBlankFuncA)(void);
-extern void (*COMMON_DATA(HBlankFuncB) HBlankFuncB)(void);
+struct DispIo COMMON_DATA(gDispIo) gDispIo = { 0 };
+void (*COMMON_DATA(HBlankFuncA) HBlankFuncA)(void) = NULL;
+void (*COMMON_DATA(HBlankFuncB) HBlankFuncB)(void) = NULL;
 
 struct KeySt * SHOULD_BE_CONST gKeySt = &gKeyStInstance;
 

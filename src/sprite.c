@@ -114,7 +114,7 @@ struct ProcScr SHOULD_BE_CONST ProcSrc_SpriteRefresher[] =
 
 // clang-format on
 
-extern struct SpriteEnt * COMMON_DATA(gSpriteAllocIt) gSpriteAllocIt;
+struct SpriteEnt * COMMON_DATA(gSpriteAllocIt) gSpriteAllocIt = NULL;
 
 struct SpriteEnt EWRAM_DATA gSpriteList[0x80] = { 0 };
 struct SpriteEnt EWRAM_DATA gSpriteLayers[0x10] = { 0 };

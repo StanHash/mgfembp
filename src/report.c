@@ -13,9 +13,9 @@
 
 #include "gbadma.h"
 
-// COMMON
-extern struct SioMessage gUnk_03001C40;
-extern struct Unit gUnits[62];
+struct SioData COMMON_DATA(gUnk_03001C40) gUnk_03001C40 = { 0 };
+
+struct Unit COMMON_DATA(gUnits) gUnits[62] = { 0 };
 
 static u8 s_unk_03000060[4];
 
@@ -185,9 +185,9 @@ void func_common_02016784(struct ReportProc * proc)
         return;
     }
 
-    gUnk_03001C40.kind = SIO_MSG_CC;
-    gUnk_03001C40.sender = gSioSt->self_id;
-    gUnk_03001C40.param = gSioSt->unk_000;
+    gUnk_03001C40.head.kind = SIO_MSG_CC;
+    gUnk_03001C40.head.sender = gSioSt->self_id;
+    gUnk_03001C40.head.param = gSioSt->unk_000;
 
     SioSend(&gUnk_03001C40, 0xA);
 

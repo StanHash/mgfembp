@@ -10,6 +10,8 @@ SRC_DIR = src
 ASM_DIR = asm
 BUILD_DIR = build
 
+LDS = mgfembp.lds
+
 # ====================
 # = TOOL DEFINITIONS =
 # ====================
@@ -105,9 +107,9 @@ one: mgfembp.bin
 
 define rules
 
-$1.elf: $1.lds $$($1_OBJS)
-	@echo "LD $1.lds $$($1_OBJS:$(BUILD_DIR)/%=%)"
-	@cd $(BUILD_DIR)/$1 && $(LD) -T ../../$1.lds -Map ../../$1.map -L../../tools/agbcc/lib $$($1_OBJS:$(BUILD_DIR)/$1/%=%) -lc -lgcc -o ../../$$@
+$1.elf: $(LDS) $$($1_OBJS)
+	@echo "LD $(LDS) $$($1_OBJS:$(BUILD_DIR)/%=%)"
+	@cd $(BUILD_DIR)/$1 && $(LD) -T ../../$(LDS) -Map ../../$1.map -L../../tools/agbcc/lib $$($1_OBJS:$(BUILD_DIR)/$1/%=%) -lc -lgcc -o ../../$$@
 
 # C dependency file
 $(BUILD_DIR)/$1/%.d: %.c

@@ -6,9 +6,8 @@
 // crt0 IntrMain
 extern void IntrMain(void);
 
-// TODO: make these objects
-extern void (*gIrqFuncTable[INT_COUNT])(void);
-extern u32 IntrMainRam[0x200];
+void (*COMMON_DATA(gIrqFuncTable) gIrqFuncTable[INT_COUNT])(void) = { 0 };
+u32 COMMON_DATA(IntrMainRam) IntrMainRam[0x200] = { 0 };
 
 static void DummyIntrFunc(void);
 
