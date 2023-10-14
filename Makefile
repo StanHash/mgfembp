@@ -189,8 +189,7 @@ $(BUILD_DIR)/mgfembp_20030206/%.d: CPPFLAGS += -DVER_20030206
 $(BUILD_DIR)/mgfembp_20030219/%.d: CPPFLAGS += -DVER_20030219
 $(BUILD_DIR)/mgfembp/%.d:          CPPFLAGS += -DVER_FINAL
 
-# not yet supported by agbcc :/
-# %/main.o:            CFLAGS += -mtpcs-frame
+%/main.o:         CFLAGS += -mtpcs-frame
 
 %/interrupts.o:   CFLAGS += -O0
 %/hardware.o:     CFLAGS += -O0
